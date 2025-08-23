@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Quote Request - Text 4 Junk Removal</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1c40f;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .alert-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .content {
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .customer-info {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+            display: inline-block;
+            width: 120px;
+        }
+
+        .info-value {
+            color: #1f2937;
+        }
+
+        .message-section {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .message-section h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .message-content {
+            color: #78350f;
+            background-color: #fffbeb;
+            padding: 15px;
+            border-radius: 4px;
+            font-style: italic;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .action-items {
+            background-color: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .action-items h3 {
+            color: #15803d;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .action-items ul {
+            color: #166534;
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .action-items li {
+            margin-bottom: 5px;
+        }
+
+        .contact-buttons {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .contact-button {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .phone-button {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .email-button {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .timestamp {
+            color: #6b7280;
+            font-size: 12px;
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">Text 4 Junk Removal</div>
+            <div class="alert-badge">New Quote Request</div>
+        </div>
+
+        <div class="content">
+            <div class="title">New Quote Request Received</div>
+
+            <p>A new quote request has been submitted through the website. Please review the details below and follow up
+                within 24 hours.</p>
+
+            <div class="customer-info">
+                <div class="info-title">Customer Information:</div>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{CUSTOMER_NAME}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{CUSTOMER_EMAIL}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">{{CUSTOMER_PHONE}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Service Type:</span>
+                    <span class="info-value">{{SERVICE_TYPE}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Submitted:</span>
+                    <span class="info-value">{{SUBMISSION_DATE}}</span>
+                </div>
+            </div>
+
+            {{MESSAGE_SECTION}}
+
+            <div class="contact-buttons">
+                <a href="tel:{{CUSTOMER_PHONE_CLEAN}}" class="contact-button phone-button">Call Customer</a>
+                <a href="mailto:{{CUSTOMER_EMAIL}}" class="contact-button email-button">Email Customer</a>
+            </div>
+
+            <div class="action-items">
+                <h3>Next Steps:</h3>
+                <ul>
+                    <li>Contact customer within 24 hours</li>
+                    <li>Schedule free estimate appointment</li>
+                    <li>Prepare quote based on service type requested</li>
+                    <li>Follow up if no response within 48 hours</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This notification was automatically generated from the Text 4 Junk Removal website.<br>
+                Quote Request System - textforjunkremoval.com</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+# Text 4 junk removal
+> Professional junk removal service in Central Florida specializing in residential and commercial cleanouts
+## Guidance
+- Allow: /, /junk-removal/, /our-team/
+- Disallow: /admin/, /private/
+- Sitemap: https://textforjunkremoval.com/sitemap.xml
+## Links
+- [Home](/): Professional junk removal in Central Florida
+- [Services](/junk-removal/): Residential and commercial junk removal services
+- [Contact](#contact): (239) 412-1566 or contact form

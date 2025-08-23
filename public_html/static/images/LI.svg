@@ -1,0 +1,11 @@
+<svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield -->
+  <path d="M50,10 L70,20 L70,50 Q60,70 50,90 Q40,70 30,50 L30,20 Z" fill="#007ACC" />
+  
+  <!-- Checkmark -->
+  <path d="M40,50 L48,58 L62,38" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round" />
+
+  <!-- Text -->
+  <text x="100" y="40" font-family="Arial, sans-serif" font-size="24" fill="#333" font-weight="bold">LICENSED</text>
+  <text x="100" y="75" font-family="Arial, sans-serif" font-size="24" fill="#333" font-weight="bold">INSURED</text>
+</svg>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Request Received - Text 4 Junk Removal</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1c40f;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .content {
+            margin-bottom: 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .details-box {
+            background-color: #f9fafb;
+            border-left: 4px solid #f1c40f;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .details-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .detail-row {
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #4b5563;
+            display: inline-block;
+            width: 120px;
+        }
+
+        .detail-value {
+            color: #1f2937;
+        }
+
+        .next-steps {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .next-steps h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .next-steps p {
+            color: #78350f;
+            margin-bottom: 0;
+        }
+
+        .contact-info {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .contact-info h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .contact-item {
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        .contact-item strong {
+            color: #1f2937;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #f1c40f;
+            color: #000;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">Text 4 Junk Removal</div>
+            <div class="tagline">Clear the clutter, reclaim your space</div>
+        </div>
+
+        <div class="content">
+            <div class="greeting">Hi {{CUSTOMER_NAME}},</div>
+
+            <p>Thank you for requesting a quote from Text 4 Junk Removal! We've received your request and wanted to confirm
+                the details with you.</p>
+
+            <div class="details-box">
+                <div class="details-title">Your Quote Request Details:</div>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">{{CUSTOMER_NAME}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{CUSTOMER_EMAIL}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">{{CUSTOMER_PHONE}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Service Type:</span>
+                    <span class="detail-value">{{SERVICE_TYPE}}</span>
+                </div>
+                {{MESSAGE_SECTION}}
+                <div class="detail-row">
+                    <span class="detail-label">Submitted:</span>
+                    <span class="detail-value">{{SUBMISSION_DATE}}</span>
+                </div>
+            </div>
+
+            <div class="next-steps">
+                <h3>What happens next?</h3>
+                <p>Our team will review your request and contact you within 24 hours to schedule a free, no-obligation
+                    estimate. We'll work with you to find a convenient time that fits your schedule.</p>
+            </div>
+
+            <div class="contact-info">
+                <h3>Need to reach us sooner?</h3>
+                <div class="contact-item"><strong>Phone:</strong> (239) 412-1566</div>
+                <div class="contact-item"><strong>Email:</strong> info@textforjunkremoval.com</div>
+                <div class="contact-item"><strong>Hours:</strong> Mo-Fr 7:00 AM - 6:00 PM, Sa 8:00 AM - 6:00 PM</div>
+            </div>
+
+            <p>We appreciate your interest in Text 4 Junk Removal and look forward to helping you clear the clutter and
+                reclaim your space!</p>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated confirmation email from Text 4 Junk Removal.<br>
+                Professional Junk Removal in Southwest Florida</p>
+        </div>
+    </div>
+</body>
+
+</html>

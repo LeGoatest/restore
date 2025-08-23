@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "composer": "^4.1.0",
+    "htmx.org": "^2.0.6",
+    "sqlite3": "^5.1.7",
+    "tailwindcss": "^4.1.11"
+  },
+  "name": "junkremoval",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@axe-core/cli": "^4.10.2",
+    "@iconify/json": "^2.2.367",
+    "@iconify/tailwind4": "^1.0.6",
+    "axe-core": "^4.10.3"
+  },
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i ./input.css -o ./public_html/static/css/styles.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

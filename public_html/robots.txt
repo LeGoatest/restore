@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://textforjunkremoval.com/sitemap.xml
+
+# LLM Training Files
+# Basic business information for AI training
+Allow: /llms.txt
+# Comprehensive business data for AI training
+Allow: /llms-full.txt
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /.kiro/
+
+# Crawl delay
+Crawl-delay: 1
