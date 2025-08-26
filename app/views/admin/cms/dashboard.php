@@ -1,56 +1,94 @@
 <!-- CMS Dashboard -->
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">Content Management System</h2>
-    <p class="text-gray-600 mb-6">Manage your website content using the PBBD (Primitives → Blocks → Blueprints → Documents) architecture.</p>
-    
-    <!-- PBBD Overview Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-blue-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-blue-600"><?= count($primitives) ?></div>
-            <div class="text-sm text-blue-600">Primitives</div>
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Content Management System</h1>
+        <p class="text-gray-600">Manage your website content with documents, blueprints, and blocks.</p>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="icon-[heroicons--document-20-solid] text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900"><?= count($documents) ?></div>
+                    <div class="text-sm text-gray-600">Documents</div>
+                </div>
+            </div>
         </div>
-        <div class="bg-green-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-green-600"><?= count($blocks) ?></div>
-            <div class="text-sm text-green-600">Blocks</div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="icon-[heroicons--rectangle-group-20-solid] text-green-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900"><?= count($blueprints) ?></div>
+                    <div class="text-sm text-gray-600">Blueprints</div>
+                </div>
+            </div>
         </div>
-        <div class="bg-yellow-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-yellow-600"><?= count($blueprints) ?></div>
-            <div class="text-sm text-yellow-600">Blueprints</div>
-        </div>
-        <div class="bg-purple-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-purple-600"><?= count($documents) ?></div>
-            <div class="text-sm text-purple-600">Documents</div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="icon-[heroicons--squares-plus-20-solid] text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900"><?= count($blocks) ?></div>
+                    <div class="text-sm text-gray-600">Blocks</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <a href="/admin/cms/system-builder" 
-           class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors">
-            <i class="heroicons--wrench-screwdriver-20-solid text-blue-600 text-xl mr-3"></i>
-            <div>
-                <div class="font-medium text-blue-900">System Builder</div>
-                <div class="text-sm text-blue-600">Create blocks & blueprints</div>
-            </div>
-        </a>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/admin/cms/documents/create" 
+               class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors"
+               hx-get="/admin/cms/documents/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+                <i class="icon-[heroicons--document-plus-20-solid] text-blue-600 text-xl mr-3"></i>
+                <div>
+                    <div class="font-medium text-blue-900">New Document</div>
+                    <div class="text-sm text-blue-600">Create content</div>
+                </div>
+            </a>
 
-        <a href="/admin/cms/documents/create" 
-           class="flex items-center p-4 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors">
-            <i class="heroicons--document-plus-20-solid text-green-600 text-xl mr-3"></i>
-            <div>
-                <div class="font-medium text-green-900">New Document</div>
-                <div class="text-sm text-green-600">Create new content</div>
-            </div>
-        </a>
+            <a href="/admin/cms/blueprints/create" 
+               class="flex items-center p-4 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors"
+               hx-get="/admin/cms/blueprints/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+                <i class="icon-[heroicons--rectangle-group-20-solid] text-green-600 text-xl mr-3"></i>
+                <div>
+                    <div class="font-medium text-green-900">New Blueprint</div>
+                    <div class="text-sm text-green-600">Create template</div>
+                </div>
+            </a>
 
-        <a href="/admin/cms/documents" 
-           class="flex items-center p-4 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-colors">
-            <i class="heroicons--folder-20-solid text-purple-600 text-xl mr-3"></i>
-            <div>
-                <div class="font-medium text-purple-900">All Documents</div>
-                <div class="text-sm text-purple-600">Manage existing content</div>
-            </div>
-        </a>
+            <a href="/admin/cms/blocks/create" 
+               class="flex items-center p-4 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-colors"
+               hx-get="/admin/cms/blocks/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+                <i class="icon-[heroicons--squares-plus-20-solid] text-purple-600 text-xl mr-3"></i>
+                <div>
+                    <div class="font-medium text-purple-900">New Block</div>
+                    <div class="text-sm text-purple-600">Create component</div>
+                </div>
+            </a>
+
+            <a href="/admin/cms/documents" 
+               class="flex items-center p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors"
+               hx-get="/admin/cms/documents" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+                <i class="icon-[heroicons--folder-20-solid] text-gray-600 text-xl mr-3"></i>
+                <div>
+                    <div class="font-medium text-gray-900">View All</div>
+                    <div class="text-sm text-gray-600">Browse content</div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 

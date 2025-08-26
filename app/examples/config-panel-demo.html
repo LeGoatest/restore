@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConfigPanel Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .primitive-demo {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            background: #fafafa;
+        }
+        
+        .test-button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .test-button:hover {
+            background: #005a8b;
+        }
+        
+        .widget {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .builder_actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            fill: #666;
+        }
+        
+        .icon:hover {
+            fill: #007cba;
+        }
+        
+        .fieldLabel {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .field-key {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>ConfigPanel Demo</h1>
+        <p>This demo shows the primitive configuration panel functionality.</p>
+        
+        <div class="controls">
+            <button class="test-button" onclick="testTextPrimitive()">Test Text Primitive</button>
+            <button class="test-button" onclick="testNumberPrimitive()">Test Number Primitive</button>
+            <button class="test-button" onclick="testImagePrimitive()">Test Image Primitive</button>
+            <button class="test-button" onclick="testBooleanPrimitive()">Test Boolean Primitive</button>
+        </div>
+        
+        <div id="primitives-container">
+            <!-- Primitives will be added here -->
+        </div>
+        
+        <div class="primitive-demo">
+            <h3>Sample Text Primitive</h3>
+            <div class="widget widget-UID" data-primitive-type="text" data-widget-key="sample_text">
+                <div class="builder_actions">
+                    <svg class="icon delete" viewBox="0 0 20 20">
+                        <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6v11a1 1 0 001 1h12a1 1 0 001-1V6H3z"/>
+                    </svg>
+                    <svg class="icon settings" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg class="icon drag-handle" viewBox="0 0 24 24">
+                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                </div>
+                <header>
+                    <label class="fieldLabel">Sample Text Field</label>
+                    <span class="field-key">sample_text</span>
+                </header>
+                <input type="text" placeholder="Enter text..." disabled>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load ConfigPanel -->
+    <script src="../src/BlockBuilder/ConfigPanel.js"></script>
+    
+    <script>
+        // Initialize ConfigPanel
+        const configPanel = new ConfigPanel();
+        
+        // Test functions
+        function testTextPrimitive() {
+            const element = document.querySelector('.widget[data-primitive-type="text"]');
+            const config = {
+                name: 'Sample Text Field',
+                label: 'Sample Text Field',
+                apiId: 'sample_text',
+                placeholder: 'Enter text...',
+                required: false,
+                maxLength: 255
+            };
+            
+            configPanel.openConfiguration(element, config);
+        }
+        
+        function testNumberPrimitive() {
+            const element = createMockPrimitive('number', {
+                name: 'Sample Number Field',
+                label: 'Sample Number Field',
+                apiId: 'sample_number',
+                placeholder: 'Enter number...',
+                required: false,
+                min: 0,
+                max: 100,
+                step: 1
+            });
+            
+            configPanel.openConfiguration(element, element.config);
+        }
+        
+        function testImagePrimitive() {
+            const element = createMockPrimitive('image', {
+                name: 'Sample Image Field',
+                label: 'Sample Image Field',
+                apiId: 'sample_image',
+                required: false,
+                constraint: {
+                    width: 1200,
+                    height: 800
+                }
+            });
+            
+            configPanel.openConfiguration(element, element.config);
+        }
+        
+        function testBooleanPrimitive() {
+            const element = createMockPrimitive('boolean', {
+                name: 'Sample Boolean Field',
+                label: 'Sample Boolean Field',
+                apiId: 'sample_boolean',
+                required: false,
+                default: false
+            });
+            
+            configPanel.openConfiguration(element, element.config);
+        }
+        
+        function createMockPrimitive(type, config) {
+            const element = document.createElement('div');
+            element.className = `widget widget-${type}`;
+            element.dataset.primitiveType = type;
+            element.dataset.widgetKey = config.apiId;
+            element.config = config;
+            
+            element.innerHTML = `
+                <div class="builder_actions">
+                    <svg class="icon settings" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                    </svg>
+                </div>
+                <header>
+                    <label class="fieldLabel">${config.label}</label>
+                    <span class="field-key">${config.apiId}</span>
+                </header>
+            `;
+            
+            return element;
+        }
+        
+        // Listen for configuration saved events
+        document.addEventListener('primitiveConfigurationSaved', (e) => {
+            console.log('Configuration saved:', e.detail);
+            alert('Configuration saved successfully!');
+        });
+        
+        // Add click handlers to settings buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.settings')) {
+                const widget = e.target.closest('.widget');
+                const primitiveType = widget.dataset.primitiveType;
+                const config = widget.config || {
+                    name: widget.querySelector('.fieldLabel').textContent,
+                    label: widget.querySelector('.fieldLabel').textContent,
+                    apiId: widget.querySelector('.field-key').textContent,
+                    placeholder: 'Enter value...',
+                    required: false
+                };
+                
+                configPanel.openConfiguration(widget, config);
+            }
+        });
+    </script>
+</body>
+</html>

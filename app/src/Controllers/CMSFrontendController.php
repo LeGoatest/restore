@@ -111,7 +111,7 @@ class CMSFrontendController extends Controller
             "SELECT d.*, b.name as blueprint_name, b.handle as blueprint_handle 
              FROM cms_documents d 
              LEFT JOIN cms_blueprints b ON d.blueprint_id = b.id 
-             WHERE d.slug = 'home' AND d.status = 'published'"
+             WHERE d.slug = '/' AND d.status = 'published'"
         );
 
         if (!$document) {

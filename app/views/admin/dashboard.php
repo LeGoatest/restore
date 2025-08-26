@@ -253,12 +253,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// Function to initialize all dashboard charts
+function initializeDashboardCharts() {
     // Check if Chart.js is loaded
     if (typeof Chart === 'undefined') {
         console.error('Chart.js not loaded');
         return;
     }
+
+    // Destroy existing charts to prevent memory leaks
+    Chart.helpers.each(Chart.instances, function(instance) {
+        instance.destroy();
+    });
 
     // Chart.js default configuration
     Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
@@ -456,6 +462,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+    }
+}
+
+// Initialize charts on DOM ready
+document.addEventListener('DOMContentLoaded', initializeDashboardCharts);
+
+// Re-initialize charts after HTMX content swap
+document.addEventListener('htmx:afterSwap', function(event) {
+    // Only reinitialize if we're on the dashboard page
+    if (document.getElementById('trafficChart')) {
+        initializeDashboardCharts();
     }
 });
 </script>

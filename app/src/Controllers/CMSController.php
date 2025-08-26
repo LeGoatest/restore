@@ -55,17 +55,30 @@ class CMSController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'];
             $handle = strtolower(str_replace(' ', '_', $name));
-            $schema = json_encode($_POST['schema'] ?? []);
+            $block_type = $_POST['block_type'] ?? 'content';
+            
+            // Handle schema - could be JSON string from JavaScript or array from form
+            $schema = $_POST['schema'] ?? [];
+            if (is_string($schema)) {
+                // Already JSON from JavaScript
+                $schema_json = $schema;
+            } else {
+                // Convert array to JSON
+                $schema_json = json_encode($schema);
+            }
+            
             $template = $_POST['template'] ?? '';
 
-            Database::insert('cms_blocks', [
+            $block_id = Database::insert('cms_blocks', [
                 'name' => $name,
                 'handle' => $handle,
-                'schema' => $schema,
-                'template' => $template
+                'schema' => $schema_json,
+                'template' => $template,
+                'block_type' => $block_type
             ]);
 
-            header('Location: /admin/cms/system-builder');
+            // Redirect to block builder for further customization
+            header('Location: /admin/cms/blocks/builder?id=' . $block_id);
             exit;
         }
 
@@ -119,7 +132,20 @@ class CMSController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
             $blueprint_id = $_POST['blueprint_id'];
-            $content = json_encode($_POST['content'] ?? []);
+            
+            // Handle content - if it's already JSON string, don't double-encode
+            $content = $_POST['content'] ?? '{}';
+            if (!is_string($content)) {
+                $content = json_encode($content);
+            } else {
+                // Validate that it's valid JSON
+                $decoded = json_decode($content, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    // If invalid JSON, treat as empty object
+                    $content = '{}';
+                }
+            }
+            
             $slug = strtolower(str_replace(' ', '-', $title));
 
             Database::insert('cms_documents', [
@@ -260,7 +286,20 @@ class CMSController extends Controller
         $title = $_POST['title'] ?? '';
         $slug = $_POST['slug'] ?? strtolower(str_replace(' ', '-', $title));
         $blueprint_id = $_POST['blueprint_id'] ?? null;
-        $content = json_encode($_POST['content'] ?? []);
+        
+        // Handle content - if it's already JSON string, don't double-encode
+        $content = $_POST['content'] ?? '{}';
+        if (!is_string($content)) {
+            $content = json_encode($content);
+        } else {
+            // Validate that it's valid JSON
+            $decoded = json_decode($content, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                // If invalid JSON, treat as empty object
+                $content = '{}';
+            }
+        }
+        
         $status = $_POST['status'] ?? 'draft';
         $meta_title = $_POST['meta_title'] ?? '';
         $meta_description = $_POST['meta_description'] ?? '';
@@ -322,6 +361,33 @@ class CMSController extends Controller
         ];
 
         return $this->render('admin/cms/edit-block', $data, 'admin');
+    }
+
+    public function blockBuilder(): string
+    {
+        Auth::requireAuth();
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            header('Location: /admin/cms/blocks');
+            exit;
+        }
+
+        $block = Database::fetchOne("SELECT * FROM cms_blocks WHERE id = ?", [$id]);
+        if (!$block) {
+            header('Location: /admin/cms/blocks');
+            exit;
+        }
+
+        $data = [
+            'title' => 'Block Builder - ' . $block['name'],
+            'page_title' => 'Block Builder',
+            'current_page' => 'cms',
+            'username' => Auth::getUsername(),
+            'block' => $block
+        ];
+
+        return $this->render('admin/cms/block-builder', $data, 'minimal');
     }
 
     public function updateBlock(): void

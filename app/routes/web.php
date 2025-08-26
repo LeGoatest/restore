@@ -46,6 +46,7 @@ $router->get('/admin/cms/blueprints', CMSController::class, 'blueprints');
 $router->get('/admin/cms/blueprints/create', CMSController::class, 'createBlueprint');
 $router->post('/admin/cms/blueprints/create', CMSController::class, 'createBlueprint');
 $router->get('/admin/cms/blocks/edit', CMSController::class, 'editBlock');
+$router->get('/admin/cms/blocks/builder', CMSController::class, 'blockBuilder');
 $router->post('/admin/cms/blocks/update', CMSController::class, 'updateBlock');
 $router->post('/admin/cms/blocks/delete', CMSController::class, 'deleteBlock');
 $router->get('/admin/cms/blueprints/edit', CMSController::class, 'editBlueprint');

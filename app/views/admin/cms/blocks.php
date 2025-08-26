@@ -1,90 +1,127 @@
-<!-- All Blocks -->
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-6">
+<!-- Custom Types - Prismic Style -->
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200" style="min-height: 80px;">
         <div>
-            <h2 class="text-xl font-semibold text-gray-900">All Blocks</h2>
-            <p class="text-gray-600">Manage your reusable content components.</p>
+            <h1 class="text-2xl font-semibold text-gray-900">Custom Types</h1>
         </div>
-        <div class="flex space-x-3">
-            <a href="/admin/cms/system-builder" 
-               class="text-gray-600 hover:text-gray-800"
-               hx-get="/admin/cms/system-builder" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
-                <i class="heroicons--arrow-left-20-solid mr-2"></i>
-                Back to System Builder
-            </a>
+        <div class="flex-shrink-0">
             <a href="/admin/cms/blocks/create" 
-               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-               hx-get="/admin/cms/blocks/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
-                <i class="heroicons--plus-20-solid mr-2"></i>
-                New Block
+               class="inline-flex items-center px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-md font-medium transition-colors shadow-lg border-2 border-green-600"
+               hx-get="/admin/cms/blocks/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true"
+               style="background-color: #10b981 !important; color: white !important; display: inline-flex !important;">
+                <i class="icon-[heroicons--plus-20-solid] mr-2"></i>
+                Create new
             </a>
         </div>
     </div>
 
+    <!-- Filter Tabs -->
+    <div class="border-b border-gray-200">
+        <div class="flex">
+            <button type="button" 
+                    class="px-6 py-3 text-sm font-medium text-gray-900 border-b-2 border-gray-900 bg-white">
+                Active
+            </button>
+            <button type="button" 
+                    class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 bg-gray-50">
+                Disabled
+            </button>
+        </div>
+    </div>
+
     <?php if (empty($blocks)): ?>
-        <div class="text-center py-12">
-            <i class="heroicons--cube-20-solid text-gray-400 text-4xl mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No blocks yet</h3>
-            <p class="text-gray-600 mb-6">Create your first block to start building reusable components.</p>
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                <i class="icon-[heroicons--cube-20-solid] text-gray-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No custom types yet</h3>
+            <p class="text-gray-600 mb-6">Create your first custom type to start building content.</p>
             <a href="/admin/cms/blocks/create" 
-               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+               class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
                hx-get="/admin/cms/blocks/create" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
-                <i class="heroicons--plus-20-solid mr-2"></i>
-                Create First Block
+                Create new
             </a>
         </div>
     <?php else: ?>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($blocks as $block): ?>
-            <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900"><?= htmlspecialchars($block['name']) ?></h3>
-                        <p class="text-sm text-gray-600 font-mono"><?= htmlspecialchars($block['handle']) ?></p>
-                    </div>
-                    <i class="heroicons--cube-20-solid text-blue-600 text-xl"></i>
-                </div>
-                
-                <!-- Schema Preview -->
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">Fields:</h4>
-                    <?php 
-                    $schema = json_decode($block['schema'], true);
-                    if ($schema && is_array($schema)): ?>
-                        <div class="space-y-1">
-                            <?php foreach ($schema as $field): ?>
-                            <div class="flex items-center text-xs text-gray-600">
-                                <span class="font-medium"><?= htmlspecialchars($field['field'] ?? '') ?></span>
-                                <span class="mx-2">•</span>
-                                <span><?= htmlspecialchars($field['primitive'] ?? '') ?></span>
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">API ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items count</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php foreach ($blocks as $block): ?>
+                    <?php
+                    // Count documents using this block (you'll need to implement this query)
+                    $documentCount = 0; // TODO: Implement document count query
+                    $blockType = ucfirst($block['block_type'] ?? 'Single');
+                    ?>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">
+                                <a href="/admin/cms/blocks/builder?id=<?= $block['id'] ?>" 
+                                   class="hover:text-blue-600"
+                                   hx-get="/admin/cms/blocks/builder?id=<?= $block['id'] ?>" 
+                                   hx-target="body" 
+                                   hx-swap="outerHTML" 
+                                   hx-push-url="true">
+                                    <?= htmlspecialchars($block['name']) ?>
+                                </a>
                             </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <p class="text-xs text-gray-500">No fields defined</p>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Template Preview -->
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">Template:</h4>
-                    <div class="bg-gray-50 rounded p-2 text-xs font-mono text-gray-600 max-h-20 overflow-hidden">
-                        <?= htmlspecialchars(substr($block['template'], 0, 100)) ?><?= strlen($block['template']) > 100 ? '...' : '' ?>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="flex justify-between items-center pt-4 border-t border-gray-200">
-                    <span class="text-xs text-gray-500">
-                        <?= date('M j, Y', strtotime($block['created_at'])) ?>
-                    </span>
-                    <div class="flex space-x-2">
-                        <button class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
-                        <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 font-mono">
+                                <?= htmlspecialchars($block['handle']) ?>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">
+                                <?= $blockType ?>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">
+                                <?= $documentCount ?> doc<?= $documentCount !== 1 ? 's' : '' ?>.
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <div class="flex items-center justify-end space-x-2">
+                                <a href="/admin/cms/blocks/builder?id=<?= $block['id'] ?>" 
+                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                   hx-get="/admin/cms/blocks/builder?id=<?= $block['id'] ?>" 
+                                   hx-target="body" 
+                                   hx-swap="outerHTML" 
+                                   hx-push-url="true">
+                                    Edit
+                                </a>
+                                <button type="button" 
+                                        onclick="disableBlock(<?= $block['id'] ?>)"
+                                        class="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-50">
+                                    Disable
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+function disableBlock(blockId) {
+    if (confirm('Are you sure you want to disable this custom type?')) {
+        // TODO: Implement disable functionality
+        console.log('Disable block:', blockId);
+    }
+}
+</script>

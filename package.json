@@ -14,10 +14,14 @@
     "@axe-core/cli": "^4.10.2",
     "@iconify/json": "^2.2.367",
     "@iconify/tailwind4": "^1.0.6",
-    "axe-core": "^4.10.3"
+    "axe-core": "^4.10.3",
+    "jest": "^29.7.0",
+    "jsdom": "^23.0.1"
   },
   "scripts": {
-    "build": "npx @tailwindcss/cli -i ./input.css -o ./public_html/static/css/styles.css --watch"
+    "build": "npx @tailwindcss/cli -i ./input.css -o ./public_html/static/css/styles.css --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",

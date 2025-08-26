@@ -44,9 +44,23 @@ class Navigation
             '/admin/quotes' => 'quotes',
             '/admin/services' => 'services',
             '/admin/cms' => 'cms',
+            '/admin/cms/documents' => 'cms-documents',
+            '/admin/cms/blueprints' => 'cms-blueprints',
+            '/admin/cms/blocks' => 'cms-blocks',
             '/admin/users' => 'users',
             '/admin/settings' => 'settings'
         ];
+
+        // Handle dynamic paths (like edit pages)
+        if (strpos($currentPath, '/admin/cms/documents') === 0) {
+            return $view === 'cms-documents';
+        }
+        if (strpos($currentPath, '/admin/cms/blueprints') === 0) {
+            return $view === 'cms-blueprints';
+        }
+        if (strpos($currentPath, '/admin/cms/blocks') === 0) {
+            return $view === 'cms-blocks';
+        }
 
         return ($pathToView[$currentPath] ?? '') === $view;
     }

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Primitive Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .widget {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        .widget-UID {
+            background: #fff;
+        }
+        .widget-validated {
+            border-left: 3px solid #4caf50;
+        }
+        .generating {
+            opacity: 0.8;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .fieldLabel {
+            font-weight: 600;
+            color: #333;
+        }
+        .field-key {
+            font-size: 12px;
+            color: #666;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .builder_actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .builder_actions svg {
+            cursor: pointer;
+            fill: #666;
+        }
+        .builder_actions svg:hover {
+            fill: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[disabled] {
+            background: #f9f9f9;
+            color: #666;
+        }
+        .demo-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-info">
+            <h2>Text Primitive Demo</h2>
+            <p>This demo shows the Text primitive rendered with exact Prismic UID structure.</p>
+        </div>
+        
+        <div id="primitive-container">
+            <!-- Text primitives will be rendered here -->
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="addTextPrimitive()">Add Text Primitive</button>
+            <button onclick="clearPrimitives()">Clear All</button>
+        </div>
+    </div>
+
+    <!-- SVG Icons (matching Prismic) -->
+    <svg style="display: none;">
+        <defs>
+            <symbol id="md-delete" viewBox="0 0 20 20">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </symbol>
+            <symbol id="md-settings" viewBox="0 0 20 20">
+                <path d="M15.95 10.78c.03-.25.05-.51.05-.78s-.02-.53-.06-.78l1.69-1.32c.15-.12.19-.34.1-.51l-1.6-2.77c-.1-.18-.31-.24-.49-.18l-1.99.8c-.42-.32-.86-.58-1.35-.78L12 2.34c-.03-.2-.2-.34-.4-.34H8.4c-.2 0-.36.14-.39.34l-.3 2.12c-.49.2-.94.47-1.35.78l-1.99-.8c-.18-.07-.39 0-.49.18l-1.6 2.77c-.1.18-.06.39.1.51l1.69 1.32c-.04.25-.07.52-.07.78s.02.53.06.78L2.37 12.1c-.15.12-.19.34-.1.51l1.6 2.77c.1.18.31.24.49.18l1.99-.8c.42.32.86.58 1.35.78l.3 2.12c.04.2.2.34.4.34h3.2c.2 0 .37-.14.39-.34l.3-2.12c.49-.2.94-.47 1.35-.78l1.99.8c.18.07.39 0 .49-.18l1.6-2.77c.1-.18.06-.39-.1-.51l-1.67-1.32zM10 13c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/>
+            </symbol>
+            <symbol id="md-drag-handle" viewBox="0 0 24 24">
+                <path d="M20 9H4v2h16V9zM4 15h16v-2H4v2z"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <script src="../src/BlockBuilder/PrimitiveRenderer.js"></script>
+    <script>
+        const renderer = new PrimitiveRenderer();
+        let primitiveCount = 0;
+
+        function addTextPrimitive() {
+            primitiveCount++;
+            const config = {
+                apiId: `text_field_${primitiveCount}`,
+                name: `text_field_${primitiveCount}`,
+                label: `Text Field ${primitiveCount}`,
+                placeholder: `Enter text for field ${primitiveCount}`
+            };
+
+            const element = renderer.renderPrimitive('text', config, primitiveCount - 1);
+            document.getElementById('primitive-container').appendChild(element);
+        }
+
+        function clearPrimitives() {
+            document.getElementById('primitive-container').innerHTML = '';
+            primitiveCount = 0;
+        }
+
+        // Add initial primitive
+        addTextPrimitive();
+    </script>
+</body>
+</html>
