@@ -25,143 +25,145 @@ function isCurrentAdminPage($view) {
 
     <!-- Navigation Menu -->
     <nav class="admin-sidebar-nav">
-        <ul>
+        <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
                 <a href="/admin" 
-                   class="<?= isCurrentAdminPage('admin') ? 'active' : '' ?>"
+                   class="flex items-center px-4 py-2.5 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('admin') ? 'bg-gray-800' : '' ?>"
                    hx-get="/admin" 
                    hx-target="body" 
                    hx-swap="outerHTML" 
                    hx-push-url="true">
                     <i class="icon-[heroicons--squares-2x2-20-solid] text-lg"></i>
-                    <span>Dashboard</span>
+                    <span class="ml-3">Dashboard</span>
                 </a>
             </li>
 
-            <!-- Contacts -->
-            <li>
-                <a href="/admin/contacts" 
-                   class="<?= isCurrentAdminPage('contacts') ? 'active' : '' ?>"
-                   hx-get="/admin/contacts" 
-                   hx-target="body" 
-                   hx-swap="outerHTML" 
-                   hx-push-url="true">
-                    <i class="icon-[heroicons--users-20-solid] text-lg"></i>
-                    <span>Contacts</span>
-                </a>
-            </li>
-
-            <!-- Quotes -->
-            <li>
-                <a href="/admin/quotes" 
-                   class="<?= isCurrentAdminPage('quotes') ? 'active' : '' ?>"
-                   hx-get="/admin/quotes" 
-                   hx-target="body" 
-                   hx-swap="outerHTML" 
-                   hx-push-url="true">
-                    <i class="icon-[heroicons--document-text-20-solid] text-lg"></i>
-                    <span>Quotes</span>
-                </a>
-            </li>
-
-            <!-- Services -->
-            <li>
-                <a href="/admin/services" 
-                   class="<?= isCurrentAdminPage('services') ? 'active' : '' ?>"
-                   hx-get="/admin/services" 
-                   hx-target="body" 
-                   hx-swap="outerHTML" 
-                   hx-push-url="true">
-                    <i class="icon-[heroicons--wrench-screwdriver-20-solid] text-lg"></i>
-                    <span>Services</span>
-                </a>
-            </li>
-
-            <!-- CMS Dropdown -->
-            <li class="cms-dropdown">
-                <button type="button" 
-                        class="cms-dropdown-toggle w-full flex items-center justify-between space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-gray-800 hover:text-white"
-                        onclick="toggleCMSDropdown()">
-                    <div class="flex items-center space-x-3">
-                        <i class="icon-[heroicons--cube-20-solid] text-lg"></i>
-                        <span>CMS</span>
+            <!-- Leads Group -->
+            <li class="group">
+                <details class="[&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between px-4 py-2.5 text-gray-300 hover:bg-gray-800 cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="icon-[heroicons--users-20-solid] text-lg"></i>
+                            <span class="ml-3">Leads</span>
+                        </div>
+                        <span class="transition group-open:rotate-180">
+                            <i class="icon-[heroicons--chevron-down-20-solid]"></i>
+                        </span>
+                    </summary>
+                    <div class="pl-4 mt-1 group-open:animate-fadeIn">
+                        <!-- Contacts -->
+                        <a href="/admin/contacts" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('contacts') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/contacts" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--user-20-solid] text-lg"></i>
+                            <span class="ml-3">Contacts</span>
+                        </a>
+                        <!-- Quotes -->
+                        <a href="/admin/quotes" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('quotes') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/quotes" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--document-text-20-solid] text-lg"></i>
+                            <span class="ml-3">Quotes</span>
+                        </a>
+                                                <!-- Pages (future use) -->
+                        <a href="/admin/pages" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 opacity-50 cursor-not-allowed">
+                            <i class="icon-[heroicons--document-duplicate-20-solid] text-lg"></i>
+                            <span class="ml-3">Messages</span>
+                            <span class="ml-2 text-xs bg-gray-700 px-1.5 py-0.5 rounded">Soon</span>
+                        </a>
                     </div>
-                    <i class="icon-[heroicons--chevron-down-20-solid] text-sm cms-chevron transition-transform duration-200"></i>
-                </button>
-                
-                <ul class="cms-submenu hidden mt-2 ml-6 space-y-1">
-                    <li>
-                        <a href="/admin/cms" 
-                           class="<?= isCurrentAdminPage('cms') ? 'active' : '' ?> flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-gray-800 hover:text-white text-sm"
-                           hx-get="/admin/cms" 
-                           hx-target="body" 
-                           hx-swap="outerHTML" 
-                           hx-push-url="true">
-                            <i class="icon-[heroicons--chart-bar-20-solid] text-base"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/cms/documents" 
-                           class="<?= isCurrentAdminPage('cms-documents') ? 'active' : '' ?> flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-gray-800 hover:text-white text-sm"
-                           hx-get="/admin/cms/documents" 
-                           hx-target="body" 
-                           hx-swap="outerHTML" 
-                           hx-push-url="true">
-                            <i class="icon-[heroicons--document-20-solid] text-base"></i>
-                            <span>Documents</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/cms/blueprints" 
-                           class="<?= isCurrentAdminPage('cms-blueprints') ? 'active' : '' ?> flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-gray-800 hover:text-white text-sm"
-                           hx-get="/admin/cms/blueprints" 
-                           hx-target="body" 
-                           hx-swap="outerHTML" 
-                           hx-push-url="true">
-                            <i class="icon-[heroicons--rectangle-group-20-solid] text-base"></i>
-                            <span>Blueprints</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/cms/blocks" 
-                           class="<?= isCurrentAdminPage('cms-blocks') ? 'active' : '' ?> flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-gray-800 hover:text-white text-sm"
-                           hx-get="/admin/cms/blocks" 
-                           hx-target="body" 
-                           hx-swap="outerHTML" 
-                           hx-push-url="true">
-                            <i class="icon-[heroicons--squares-plus-20-solid] text-base"></i>
-                            <span>Blocks</span>
-                        </a>
-                    </li>
-                </ul>
+                </details>
             </li>
 
-            <!-- Users -->
-            <li>
-                <a href="/admin/users" 
-                   class="<?= isCurrentAdminPage('users') ? 'active' : '' ?>"
-                   hx-get="/admin/users" 
-                   hx-target="body" 
-                   hx-swap="outerHTML" 
-                   hx-push-url="true">
-                    <i class="icon-[heroicons--user-group-20-solid] text-lg"></i>
-                    <span>Users</span>
-                </a>
+            <!-- Content Group -->
+            <li class="group">
+                <details class="[&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between px-4 py-2.5 text-gray-300 hover:bg-gray-800 cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="icon-[heroicons--document-20-solid] text-lg"></i>
+                            <span class="ml-3">Content</span>
+                        </div>
+                        <span class="transition group-open:rotate-180">
+                            <i class="icon-[heroicons--chevron-down-20-solid]"></i>
+                        </span>
+                    </summary>
+                    <div class="pl-4 mt-1 group-open:animate-fadeIn">
+                        <!-- Hero Section -->
+                        <a href="/admin/hero" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('hero') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/hero" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--home-20-solid] text-lg"></i>
+                            <span class="ml-3">Hero Section</span>
+                        </a>
+
+                        <!-- Services -->
+                        <a href="/admin/services" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('services') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/services" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--wrench-screwdriver-20-solid] text-lg"></i>
+                            <span class="ml-3">Services</span>
+                        </a>
+
+                        <!-- Pages (future use) -->
+                        <a href="/admin/pages" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 opacity-50 cursor-not-allowed">
+                            <i class="icon-[heroicons--document-duplicate-20-solid] text-lg"></i>
+                            <span class="ml-3">Pages</span>
+                            <span class="ml-2 text-xs bg-gray-700 px-1.5 py-0.5 rounded">Soon</span>
+                        </a>
+                    </div>
+                </details>
             </li>
 
-            <!-- Settings -->
-            <li>
-                <a href="/admin/settings" 
-                   class="<?= isCurrentAdminPage('settings') ? 'active' : '' ?>"
-                   hx-get="/admin/settings" 
-                   hx-target="body" 
-                   hx-swap="outerHTML" 
-                   hx-push-url="true">
-                    <i class="icon-[heroicons--cog-6-tooth-20-solid] text-lg"></i>
-                    <span>Settings</span>
-                </a>
+            <!-- Administration Group -->
+            <li class="group">
+                <details class="[&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between px-4 py-2.5 text-gray-300 hover:bg-gray-800 cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="icon-[heroicons--shield-check-20-solid] text-lg"></i>
+                            <span class="ml-3">Administration</span>
+                        </div>
+                        <span class="transition group-open:rotate-180">
+                            <i class="icon-[heroicons--chevron-down-20-solid]"></i>
+                        </span>
+                    </summary>
+                    <div class="pl-4 mt-1 group-open:animate-fadeIn">
+                        <!-- Users -->
+                        <a href="/admin/users" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('users') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/users" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--user-group-20-solid] text-lg"></i>
+                            <span class="ml-3">Users</span>
+                        </a>
+                        <!-- Settings -->
+                        <a href="/admin/settings" 
+                           class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 <?= isCurrentAdminPage('settings') ? 'bg-gray-800' : '' ?>"
+                           hx-get="/admin/settings" 
+                           hx-target="body" 
+                           hx-swap="outerHTML" 
+                           hx-push-url="true">
+                            <i class="icon-[heroicons--cog-6-tooth-20-solid] text-lg"></i>
+                            <span class="ml-3">Settings</span>
+                        </a>
+                    </div>
+                </details>
             </li>
         </ul>
     </nav>
@@ -201,17 +203,6 @@ function isCurrentAdminPage($view) {
      class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden hidden"></div>
 
 <script>
-// CMS Dropdown toggle
-function toggleCMSDropdown() {
-    const submenu = document.querySelector('.cms-submenu');
-    const chevron = document.querySelector('.cms-chevron');
-    
-    if (submenu && chevron) {
-        submenu.classList.toggle('hidden');
-        chevron.classList.toggle('rotate-180');
-    }
-}
-
 // Mobile sidebar toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('aside');
@@ -234,17 +225,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebar.classList.add('-translate-x-full');
         }
     }
-    
-    // Auto-expand CMS dropdown if on a CMS page
-    const currentPath = window.location.pathname;
-    if (currentPath.includes('/admin/cms')) {
-        const submenu = document.querySelector('.cms-submenu');
-        const chevron = document.querySelector('.cms-chevron');
-        if (submenu && chevron) {
-            submenu.classList.remove('hidden');
-            chevron.classList.add('rotate-180');
-        }
-    }
 });
 </script>
 
@@ -259,5 +239,31 @@ document.addEventListener('DOMContentLoaded', function() {
     aside:not(.-translate-x-full) {
         transform: translateX(0);
     }
+}
+
+/* Animation for collapsible sections */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.group-open\:animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Details style overrides */
+.admin-sidebar-nav details summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Active and hover states */
+.admin-sidebar-nav a.active,
+.admin-sidebar-nav summary[aria-expanded="true"] {
+    background-color: rgb(31, 41, 55);
+}
+
+.admin-sidebar-nav details > div {
+    background-color: rgba(31, 41, 55, 0.5);
+    border-left: 2px solid rgb(55, 65, 81);
 }
 </style>

@@ -10,6 +10,8 @@ use App\Core\Database;
 class Service extends Model
 {
     protected static string $table = 'services';
+    protected static array $fillable = ['name', 'description', 'category', 'price', 'sort_order', 'is_active'];
+    protected static array $allowHtml = ['description'];
     
     public static function getByCategory(string $category): array
     {
@@ -26,14 +28,34 @@ class Service extends Model
         );
     }
     
-    public static function all(): array
+    public static function all(?int $userId = null): array
     {
-        return Database::fetchAll("SELECT * FROM " . self::$table . " ORDER BY category, sort_order, name");
+        $sql = "SELECT * FROM " . self::$table;
+        $params = [];
+        
+        // Add user_id filter if provided and column exists
+        if ($userId !== null && static::hasColumn('user_id')) {
+            $sql .= " WHERE user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+        
+        $sql .= " ORDER BY category, sort_order, name";
+        
+        return Database::fetchAll($sql, $params);
     }
     
-    public static function count(): int
+    public static function count(?int $userId = null): int
     {
-        $result = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table . " WHERE is_active = 1");
+        $sql = "SELECT COUNT(*) as count FROM " . self::$table . " WHERE is_active = 1";
+        $params = [];
+        
+        // Add user_id filter if provided and column exists
+        if ($userId !== null && static::hasColumn('user_id')) {
+            $sql .= " AND user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+        
+        $result = Database::fetchOne($sql, $params);
         return $result['count'] ?? 0;
     }
     

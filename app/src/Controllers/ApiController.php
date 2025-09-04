@@ -9,22 +9,27 @@ use App\Models\Analytics;
 
 class ApiController extends Controller
 {
-    public function track(): void
+    public function track(): string
     {
-        // Only accept POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
-            return;
-        }
-
-        // Get JSON input
-        $input = json_decode(file_get_contents('php://input'), true);
+        // Set JSON content type
+        header('Content-Type: application/json');
         
-        if (!$input || !isset($input['page_url'])) {
+        // Handle both GET and POST requests
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get JSON input for POST
+            $input = json_decode(file_get_contents('php://input'), true);
+        } else {
+            // Get query parameters for GET
+            $input = [
+                'page_url' => $_GET['page_url'] ?? '',
+                'page_title' => $_GET['page_title'] ?? '',
+                'referrer' => $_GET['referrer'] ?? ''
+            ];
+        }
+        
+        if (!$input || !isset($input['page_url']) || empty($input['page_url'])) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid input']);
-            return;
+            return json_encode(['error' => 'Invalid input']);
         }
 
         try {
@@ -34,10 +39,18 @@ class ApiController extends Controller
                 $input['referrer'] ?? ''
             );
             
-            echo json_encode(['success' => true]);
+            return json_encode(['success' => true]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['error' => 'Tracking failed']);
+            return json_encode(['error' => 'Tracking failed']);
         }
+    }
+
+
+
+    public function trackalos(): string
+    {
+        // Alias for track method - handles visitor tracking for admin dashboard
+        return $this->track();
     }
 }

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Core\Model;
 use App\Core\Database;
+use App\Core\Security;
 
-class Analytics
+class Analytics extends Model
 {
+    protected static string $table = 'website_analytics';
+    protected static array $fillable = ['page_url', 'page_title', 'user_agent', 'ip_address', 'referrer', 'session_id', 'visit_date', 'visit_time'];
+    protected static array $allowHtml = [];
     public static function track(string $pageUrl, string $pageTitle = '', string $referrer = ''): void
     {
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';

@@ -27,8 +27,11 @@ use PHPUnit\Framework\Attributes\BackupStaticProperties;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\BeforeClass;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversClassesThatExtendClass;
+use PHPUnit\Framework\Attributes\CoversClassesThatImplementInterface;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNamespace;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -49,11 +52,13 @@ use PHPUnit\Framework\Attributes\ExcludeStaticPropertyFromBackup;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\IgnorePhpunitDeprecations;
+use PHPUnit\Framework\Attributes\IgnorePhpunitWarnings;
 use PHPUnit\Framework\Attributes\Large;
 use PHPUnit\Framework\Attributes\Medium;
 use PHPUnit\Framework\Attributes\PostCondition;
 use PHPUnit\Framework\Attributes\PreCondition;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RequiresEnvironmentVariable;
 use PHPUnit\Framework\Attributes\RequiresFunction;
 use PHPUnit\Framework\Attributes\RequiresMethod;
 use PHPUnit\Framework\Attributes\RequiresOperatingSystem;
@@ -69,13 +74,19 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\TestDoxFormatter;
+use PHPUnit\Framework\Attributes\TestDoxFormatterExternal;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Attributes\TestWithJson;
 use PHPUnit\Framework\Attributes\Ticket;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\Attributes\UsesClassesThatExtendClass;
+use PHPUnit\Framework\Attributes\UsesClassesThatImplementInterface;
 use PHPUnit\Framework\Attributes\UsesFunction;
 use PHPUnit\Framework\Attributes\UsesMethod;
+use PHPUnit\Framework\Attributes\UsesNamespace;
 use PHPUnit\Framework\Attributes\UsesTrait;
+use PHPUnit\Framework\Attributes\WithEnvironmentVariable;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use PHPUnit\Metadata\InvalidAttributeException;
 use PHPUnit\Metadata\Metadata;
@@ -100,6 +111,10 @@ final readonly class AttributeParser implements Parser
 
         $reflector = new ReflectionClass($className);
         $result    = [];
+
+        $small  = false;
+        $medium = false;
+        $large  = false;
 
         foreach ($reflector->getAttributes() as $attribute) {
             if (!str_starts_with($attribute->getName(), 'PHPUnit\\Framework\\Attributes\\')) {
@@ -137,10 +152,31 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
+                case CoversNamespace::class:
+                    assert($attributeInstance instanceof CoversNamespace);
+
+                    $result[] = Metadata::coversNamespace($attributeInstance->namespace());
+
+                    break;
+
                 case CoversClass::class:
                     assert($attributeInstance instanceof CoversClass);
 
                     $result[] = Metadata::coversClass($attributeInstance->className());
+
+                    break;
+
+                case CoversClassesThatExtendClass::class:
+                    assert($attributeInstance instanceof CoversClassesThatExtendClass);
+
+                    $result[] = Metadata::coversClassesThatExtendClass($attributeInstance->className());
+
+                    break;
+
+                case CoversClassesThatImplementInterface::class:
+                    assert($attributeInstance instanceof CoversClassesThatImplementInterface);
+
+                    $result[] = Metadata::coversClassesThatImplementInterface($attributeInstance->interfaceName());
 
                     break;
 
@@ -209,13 +245,51 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
-                case Large::class:
-                    $result[] = Metadata::groupOnClass('large');
+                case Small::class:
+                    if (!$medium && !$large) {
+                        $result[] = Metadata::groupOnClass('small');
+
+                        $small = true;
+                    } else {
+                        EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
+                            sprintf(
+                                '#[Small] cannot be combined with #[Medium] or #[Large] for %s',
+                                $this->testAsString($className),
+                            ),
+                        );
+                    }
 
                     break;
 
                 case Medium::class:
-                    $result[] = Metadata::groupOnClass('medium');
+                    if (!$small && !$large) {
+                        $result[] = Metadata::groupOnClass('medium');
+
+                        $medium = true;
+                    } else {
+                        EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
+                            sprintf(
+                                '#[Medium] cannot be combined with #[Small] or #[Large] for %s',
+                                $this->testAsString($className),
+                            ),
+                        );
+                    }
+
+                    break;
+
+                case Large::class:
+                    if (!$small && !$medium) {
+                        $result[] = Metadata::groupOnClass('large');
+
+                        $large = true;
+                    } else {
+                        EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
+                            sprintf(
+                                '#[Large] cannot be combined with #[Small] or #[Medium] for %s',
+                                $this->testAsString($className),
+                            ),
+                        );
+                    }
 
                     break;
 
@@ -319,6 +393,26 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
+                case RequiresEnvironmentVariable::class:
+                    assert($attributeInstance instanceof RequiresEnvironmentVariable);
+
+                    $result[] = Metadata::requiresEnvironmentVariableOnClass(
+                        $attributeInstance->environmentVariableName(),
+                        $attributeInstance->value(),
+                    );
+
+                    break;
+
+                case WithEnvironmentVariable::class:
+                    assert($attributeInstance instanceof WithEnvironmentVariable);
+
+                    $result[] = Metadata::withEnvironmentVariableOnClass(
+                        $attributeInstance->environmentVariableName(),
+                        $attributeInstance->value(),
+                    );
+
+                    break;
+
                 case RequiresSetting::class:
                     assert($attributeInstance instanceof RequiresSetting);
 
@@ -339,11 +433,6 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
-                case Small::class:
-                    $result[] = Metadata::groupOnClass('small');
-
-                    break;
-
                 case TestDox::class:
                     assert($attributeInstance instanceof TestDox);
 
@@ -358,10 +447,31 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
+                case UsesNamespace::class:
+                    assert($attributeInstance instanceof UsesNamespace);
+
+                    $result[] = Metadata::usesNamespace($attributeInstance->namespace());
+
+                    break;
+
                 case UsesClass::class:
                     assert($attributeInstance instanceof UsesClass);
 
                     $result[] = Metadata::usesClass($attributeInstance->className());
+
+                    break;
+
+                case UsesClassesThatExtendClass::class:
+                    assert($attributeInstance instanceof UsesClassesThatExtendClass);
+
+                    $result[] = Metadata::usesClassesThatExtendClass($attributeInstance->className());
+
+                    break;
+
+                case UsesClassesThatImplementInterface::class:
+                    assert($attributeInstance instanceof UsesClassesThatImplementInterface);
+
+                    $result[] = Metadata::usesClassesThatImplementInterface($attributeInstance->interfaceName());
 
                     break;
 
@@ -699,6 +809,26 @@ final readonly class AttributeParser implements Parser
 
                     break;
 
+                case RequiresEnvironmentVariable::class:
+                    assert($attributeInstance instanceof RequiresEnvironmentVariable);
+
+                    $result[] = Metadata::requiresEnvironmentVariableOnMethod(
+                        $attributeInstance->environmentVariableName(),
+                        $attributeInstance->value(),
+                    );
+
+                    break;
+
+                case WithEnvironmentVariable::class:
+                    assert($attributeInstance instanceof WithEnvironmentVariable);
+
+                    $result[] = Metadata::withEnvironmentVariableOnMethod(
+                        $attributeInstance->environmentVariableName(),
+                        $attributeInstance->value(),
+                    );
+
+                    break;
+
                 case RequiresSetting::class:
                     assert($attributeInstance instanceof RequiresSetting);
 
@@ -723,6 +853,20 @@ final readonly class AttributeParser implements Parser
                     assert($attributeInstance instanceof TestDox);
 
                     $result[] = Metadata::testDoxOnMethod($attributeInstance->text());
+
+                    break;
+
+                case TestDoxFormatter::class:
+                    assert($attributeInstance instanceof TestDoxFormatter);
+
+                    $result[] = Metadata::testDoxFormatter($className, $attributeInstance->methodName());
+
+                    break;
+
+                case TestDoxFormatterExternal::class:
+                    assert($attributeInstance instanceof TestDoxFormatterExternal);
+
+                    $result[] = Metadata::testDoxFormatter($attributeInstance->className(), $attributeInstance->methodName());
 
                     break;
 
@@ -754,6 +898,13 @@ final readonly class AttributeParser implements Parser
                     assert($attributeInstance instanceof WithoutErrorHandler);
 
                     $result[] = Metadata::withoutErrorHandler();
+
+                    break;
+
+                case IgnorePhpunitWarnings::class:
+                    assert($attributeInstance instanceof IgnorePhpunitWarnings);
+
+                    $result[] = Metadata::ignorePhpunitWarnings($attributeInstance->messagePattern());
 
                     break;
             }
@@ -788,15 +939,29 @@ final readonly class AttributeParser implements Parser
 
         EventFacade::emitter()->testRunnerTriggeredPhpunitWarning(
             sprintf(
-                'Group name "%s" is not allowed for %s %s%s%s',
+                'Group name "%s" is not allowed for %s',
                 $_groupName,
-                $testMethodName !== null ? 'method' : 'class',
-                $testClassName,
-                $testMethodName !== null ? '::' : '',
-                $testMethodName !== null ? $testMethodName : '',
+                $this->testAsString($testClassName, $testMethodName),
             ),
         );
 
         return true;
+    }
+
+    /**
+     * @param class-string      $testClassName
+     * @param ?non-empty-string $testMethodName
+     *
+     * @return non-empty-string
+     */
+    private function testAsString(string $testClassName, ?string $testMethodName = null): string
+    {
+        return sprintf(
+            '%s %s%s%s',
+            $testMethodName !== null ? 'method' : 'class',
+            $testClassName,
+            $testMethodName !== null ? '::' : '',
+            $testMethodName !== null ? $testMethodName : '',
+        );
     }
 }

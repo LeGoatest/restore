@@ -24,7 +24,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Subject</th>
+                        <th>Service Type</th>
                         <th>Message</th>
                         <th>Status</th>
                         <th>Date</th>
@@ -37,7 +37,7 @@
                         <td class="font-medium"><?= htmlspecialchars($contact['name']) ?></td>
                         <td><a href="mailto:<?= htmlspecialchars($contact['email']) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($contact['email']) ?></a></td>
                         <td><a href="tel:<?= htmlspecialchars($contact['phone']) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($contact['phone']) ?></a></td>
-                        <td><?= htmlspecialchars($contact['subject']) ?></td>
+                        <td><?= htmlspecialchars($contact['service_type'] ?? 'General Inquiry') ?></td>
                         <td class="description-preview" title="<?= htmlspecialchars($contact['message']) ?>">
                             <?= htmlspecialchars(substr($contact['message'], 0, 50)) ?><?= strlen($contact['message']) > 50 ? '...' : '' ?>
                         </td>

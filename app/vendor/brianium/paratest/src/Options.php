@@ -76,6 +76,8 @@ final readonly class Options
         'strict-coverage' => true,
         'strict-global-state' => true,
         'disallow-test-output' => true,
+        'enforce-time-limit' => true,
+        'default-time-limit' => true,
     ];
 
     public readonly bool $needsTeamcity;
@@ -354,6 +356,19 @@ final readonly class Options
                 '@see PHPUnit guide, chapter: ' . $chapter,
             ),
             new InputOption(
+                'enforce-time-limit',
+                null,
+                InputOption::VALUE_NONE,
+                '@see PHPUnit guide, chapter: ' . $chapter,
+            ),
+            new InputOption(
+                'default-time-limit',
+                null,
+                InputOption::VALUE_REQUIRED,
+                '@see PHPUnit guide, chapter: ' . $chapter,
+                '0',
+            ),
+            new InputOption(
                 'dont-report-useless-tests',
                 null,
                 InputOption::VALUE_NONE,
@@ -518,6 +533,12 @@ final readonly class Options
             ),
             new InputOption(
                 'coverage-clover',
+                null,
+                InputOption::VALUE_REQUIRED,
+                '@see PHPUnit guide, chapter: ' . $chapter = 'Code Coverage',
+            ),
+            new InputOption(
+                'coverage-openclover',
                 null,
                 InputOption::VALUE_REQUIRED,
                 '@see PHPUnit guide, chapter: ' . $chapter = 'Code Coverage',

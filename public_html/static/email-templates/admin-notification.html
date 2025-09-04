@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Quote Request - Text 4 Junk Removal</title>
+    <title>New {{SUBMISSION_TYPE}} - Restore Removal</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -152,12 +152,20 @@
 
         .phone-button {
             background-color: #22c55e;
-            color: white;
+            color: white !important;
+            text-decoration: none !important;
         }
 
         .email-button {
             background-color: #3b82f6;
-            color: white;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .admin-button {
+            background-color: #6366f1;
+            color: white !important;
+            text-decoration: none !important;
         }
 
         .footer {
@@ -175,20 +183,40 @@
             text-align: right;
             margin-top: 20px;
         }
+
+        .detail-row {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            display: inline-block;
+            width: 120px;
+            vertical-align: top;
+        }
+
+        .detail-value {
+            color: #1f2937;
+            display: inline-block;
+            width: calc(100% - 130px);
+            vertical-align: top;
+        }
     </style>
 </head>
 
 <body>
     <div class="email-container">
         <div class="header">
-            <div class="logo">Text 4 Junk Removal</div>
-            <div class="alert-badge">New Quote Request</div>
+            <div class="logo">Restore Removal</div>
+            <div class="alert-badge">New {{SUBMISSION_TYPE}}</div>
         </div>
 
         <div class="content">
-            <div class="title">New Quote Request Received</div>
+            <div class="title">New {{SUBMISSION_TYPE}} Received</div>
 
-            <p>A new quote request has been submitted through the website. Please review the details below and follow up
+            <p>A new {{SUBMISSION_TYPE}} has been submitted through the website. Please review the details below and
+                follow up
                 within 24 hours.</p>
 
             <div class="customer-info">
@@ -213,13 +241,23 @@
                     <span class="info-label">Submitted:</span>
                     <span class="info-value">{{SUBMISSION_DATE}}</span>
                 </div>
+                <div class="info-row">
+                    <span class="info-label">IP Address:</span>
+                    <span class="info-value">{{IP_ADDRESS}}</span>
+                </div>
             </div>
 
-            {{MESSAGE_SECTION}}
+            <div class="message-section">
+                <h3>Request Details</h3>
+                <div class="message-content">
+                    {{MESSAGE_SECTION}}
+                </div>
+            </div>
 
             <div class="contact-buttons">
-                <a href="tel:{{CUSTOMER_PHONE_CLEAN}}" class="contact-button phone-button">Call Customer</a>
+                <a href="tel:{{CUSTOMER_PHONE}}" class="contact-button phone-button">Call Customer</a>
                 <a href="mailto:{{CUSTOMER_EMAIL}}" class="contact-button email-button">Email Customer</a>
+                <a href="{{ADMIN_URL}}" class="contact-button admin-button">View in Admin</a>
             </div>
 
             <div class="action-items">
@@ -234,8 +272,8 @@
         </div>
 
         <div class="footer">
-            <p>This notification was automatically generated from the Text 4 Junk Removal website.<br>
-                Quote Request System - textforjunkremoval.com</p>
+            <p>This notification was automatically generated from the Restore Removal website.<br>
+                Contact & Quote System - myrestorepro.com</p>
         </div>
     </div>
 </body>

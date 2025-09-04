@@ -10,9 +10,9 @@ use PDOException;
 class Database
 {
     private static ?PDO $connection = null;
-    private static string $dbPath;
+    private static ?string $dbPath = null;
 
-    public static function init(string $dbPath = null): void
+    public static function init(?string $dbPath = null): void
     {
         self::$dbPath = $dbPath ?? __DIR__ . '/../../database/app.db';
     }
@@ -20,6 +20,11 @@ class Database
     public static function getConnection(): PDO
     {
         if (self::$connection === null) {
+            // Initialize dbPath if not set
+            if (self::$dbPath === null) {
+                self::init();
+            }
+            
             try {
                 // Ensure database directory exists
                 $dbDir = dirname(self::$dbPath);

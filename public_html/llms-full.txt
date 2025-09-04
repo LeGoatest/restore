@@ -1,33 +1,12 @@
-# Text 4 junk removal
-> Professional junk removal service in Central Florida specializing in residential and commercial cleanouts with environmental responsibility
-## About
-Delivering professional junk removal services throughout Central Florida with a focus on customer satisfaction, environmental responsibility, and community impact
-## Guidance
-- Allow: /, /junk-removal/, /our-team/
-- Disallow: /admin/, /private/
-- Sitemap: https://textforjunkremoval.com/sitemap.xml
-- Preferred-Format: JSON-LD, Markdown, HTML
-- Content-Priority: /, /junk-removal/
-- Crawl-Delay: 10
-## Links
-- [Home](/): Professional junk removal in Central Florida
-- [Services](/junk-removal/): Comprehensive junk removal services
-- [Contact](#contact): (239) 412-1566 or [email protected]
-## Detailed Services
-- Residential Junk Removal: Home cleanouts, garage cleanouts, basement cleanouts
-- Commercial Cleanouts: Office cleanouts, retail space cleanouts
-- Estate Sale Cleanouts: Complete property cleanouts after estate sales
-- Storage Unit Cleanouts: Full storage unit clearing services
-- Hot Tub Removal: Professional hot tub removal and disposal
-- Senior Home Cleanouts: Compassionate cleanout services for seniors
+# My Restore Pro
 ## Service Areas
 Homosassa Springs, Crystal River, Inverness, Ocala, The Villages, Lecanto, Beverly Hills, Pine Ridge, Citrus Springs, Floral City, Wildwood, Brooksville, Dade City, Leesburg, Belleview, Silver Springs, Citrus Hills, On Top of the World, Lady Lake, Sugarmill Woods, Spring Hill, Hernando Beach, Hudson, New Port Richey, Clermont, Tavares, Black Diamond, Groveland, Sumterville, Lake Panasoffkee, Oxford, Fruitland Park, Ocklawaha, Weeki Wachee
 ## Business Hours
 Mo-Fr 07:00-18:00, Sa 08:00-18:00
 ## Contact Information
-- Phone: (239) 412-1566
+- Phone: (727) 692-8167
 - Email: [email protected]
-- Location: Homosassa Springs, FL
+- Location: Ocala Springs, FL
 - Coordinates: 27.994402, -82.442515
 ## Languages Supported
 English
@@ -36,11 +15,11 @@ English
 - Florida Department of Environmental Protection: https://floridadep.gov/
 ## Bot Access Policy
 - User-agent: gptbot
-  Allow-Training: yes
+  Allow-Training: no
   Allow-Retrieval: yes
 - User-agent: claudebot
-  Allow-Training: yes
+  Allow-Training: no
   Allow-Retrieval: yes
 - User-agent: *
-  Allow-Training: yes
+  Allow-Training: no
   Allow-Retrieval: yes

@@ -10,6 +10,8 @@ use App\Core\Database;
 class Quote extends Model
 {
     protected static string $table = 'quotes';
+    protected static array $fillable = ['name', 'email', 'phone', 'description', 'status'];
+    protected static array $allowHtml = ['description'];
     
     public static function getByStatus(string $status): array
     {
@@ -19,14 +21,42 @@ class Quote extends Model
         );
     }
     
-    public static function all(): array
+    public static function getRecent(int $limit = 10): array
     {
-        return Database::fetchAll("SELECT * FROM " . self::$table . " ORDER BY created_at DESC");
+        return Database::fetchAll(
+            "SELECT * FROM " . self::$table . " ORDER BY created_at DESC LIMIT ?",
+            [$limit]
+        );
     }
     
-    public static function count(): int
+    public static function all(?int $userId = null): array
     {
-        $result = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table);
+        $sql = "SELECT * FROM " . self::$table;
+        $params = [];
+        
+        // Add user_id filter if provided and column exists
+        if ($userId !== null && static::hasColumn('user_id')) {
+            $sql .= " WHERE user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+        
+        $sql .= " ORDER BY created_at DESC";
+        
+        return Database::fetchAll($sql, $params);
+    }
+    
+    public static function count(?int $userId = null): int
+    {
+        $sql = "SELECT COUNT(*) as count FROM " . self::$table;
+        $params = [];
+        
+        // Add user_id filter if provided and column exists
+        if ($userId !== null && static::hasColumn('user_id')) {
+            $sql .= " WHERE user_id = :user_id";
+            $params['user_id'] = $userId;
+        }
+        
+        $result = Database::fetchOne($sql, $params);
         return $result['count'] ?? 0;
     }
     
@@ -35,45 +65,18 @@ class Quote extends Model
         return self::getByStatus('pending');
     }
     
-    public static function getApproved(): array
-    {
-        return self::getByStatus('approved');
-    }
-    
-    public static function approve(int $id, float $estimatedAmount = null): int
-    {
-        $sql = "UPDATE " . self::$table . " SET status = 'approved'";
-        $params = [$id];
-        
-        if ($estimatedAmount !== null) {
-            $sql .= ", estimated_amount = ?";
-            array_unshift($params, $estimatedAmount);
-        }
-        
-        $sql .= " WHERE id = ?";
-        
-        return Database::query($sql, $params)->rowCount();
-    }
-    
-    public static function reject(int $id, string $notes = null): int
-    {
-        $sql = "UPDATE " . self::$table . " SET status = 'rejected'";
-        $params = [$id];
-        
-        if ($notes !== null) {
-            $sql .= ", notes = ?";
-            array_unshift($params, $notes);
-        }
-        
-        $sql .= " WHERE id = ?";
-        
-        return Database::query($sql, $params)->rowCount();
-    }
-    
-    public static function complete(int $id): int
+    public static function markAsApproved(int $id): int
     {
         return Database::query(
-            "UPDATE " . self::$table . " SET status = 'completed' WHERE id = ?",
+            "UPDATE " . self::$table . " SET status = 'approved' WHERE id = ?",
+            [$id]
+        )->rowCount();
+    }
+    
+    public static function markAsRejected(int $id): int
+    {
+        return Database::query(
+            "UPDATE " . self::$table . " SET status = 'rejected' WHERE id = ?",
             [$id]
         )->rowCount();
     }

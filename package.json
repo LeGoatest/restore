@@ -6,7 +6,7 @@
     "sqlite3": "^5.1.7",
     "tailwindcss": "^4.1.11"
   },
-  "name": "junkremoval",
+  "name": "my-restore-pro",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -9,6 +9,7 @@ use App\Models\User;
 class Auth
 {
     private static bool $initialized = false;
+    private const MAGIC_LINK_EXPIRY = 900; // 15 minutes in seconds
 
     public static function init(): void
     {
@@ -20,11 +21,54 @@ class Auth
         }
     }
 
-    public static function login(string $username, string $password): bool
+    public static function generateMagicLink(string $email): ?array
     {
         self::init();
         
-        $user = User::authenticate($username, $password);
+        $user = User::findByEmail($email);
+        if (!$user) {
+            return null;
+        }
+        
+        // Generate a secure random token
+        $token = bin2hex(random_bytes(32));
+        $expires = time() + self::MAGIC_LINK_EXPIRY;
+        
+        // Store the token in the database
+        User::storeMagicLinkToken($user['id'], $token, $expires);
+        
+        // Generate the magic link URL
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $magicLinkUrl = "{$protocol}://{$host}/login/verify/{$token}";
+        
+        return [
+            'user' => $user,
+            'token' => $token,
+            'expires' => $expires,
+            'url' => $magicLinkUrl
+        ];
+    }
+
+    public static function verifyMagicLink(string $token): ?array
+    {
+        self::init();
+        
+        $user = User::findByMagicLinkToken($token);
+        
+        if (!$user || $user['magic_link_expires'] < time()) {
+            return null;
+        }
+        
+        // Clear the used token
+        User::clearMagicLinkToken($user['id']);
+        
+        return $user;
+    }
+
+    public static function loginWithMagicLink(string $token): bool
+    {
+        $user = self::verifyMagicLink($token);
         
         if ($user) {
             $_SESSION['authenticated'] = true;

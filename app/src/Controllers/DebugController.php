@@ -14,4 +14,6 @@ class DebugController extends Controller
         include __DIR__ . '/../../views/debug/post-test.php';
         return ob_get_clean();
     }
+
+
 }

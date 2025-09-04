@@ -6,6 +6,8 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Auth;
+use App\Core\Mailer;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -17,61 +19,102 @@ class AuthController extends Controller
         $data = [
             'title' => 'Admin Login - Restore Removal',
             'error' => $_SESSION['login_error'] ?? null,
+            'success' => $_SESSION['login_success'] ?? null
         ];
 
-        // Clear error message after displaying
-        unset($_SESSION['login_error']);
+        // Clear flash messages after displaying
+        unset($_SESSION['login_error'], $_SESSION['login_success']);
 
-        return $this->render('partials/login', $data);
+        return $this->render('partials/login', $data, 'main');
     }
 
-    public function login(): string
+    public function requestLogin(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/login');
+            return '';
         }
 
-        $username = trim($_POST['username'] ?? '');
-        $password = trim($_POST['password'] ?? '');
+        $email = trim($_POST['email'] ?? '');
         $isHtmx = isset($_SERVER['HTTP_HX_REQUEST']);
-
-        if (empty($username) || empty($password)) {
-            $error = 'Username and password are required';
-            
-            if ($isHtmx) {
-                return $this->view->render('partials/login', [
-                    'title' => 'Admin Login - Restore Removal',
-                    'error' => $error
-                ]);
-            } else {
-                $_SESSION['login_error'] = $error;
-                $this->redirect('/login');
-            }
-        }
-
-        if (Auth::login($username, $password)) {
-            if ($isHtmx) {
-                // For HTMX, send a redirect header
-                header('HX-Redirect: /admin');
-                return '';
-            } else {
-                $this->redirect('/admin');
-            }
-        } else {
-            $error = 'Invalid username or password';
-            
-            if ($isHtmx) {
-                return $this->view->render('partials/login', [
-                    'title' => 'Admin Login - Restore Removal',
-                    'error' => $error
-                ]);
-            } else {
-                $_SESSION['login_error'] = $error;
-                $this->redirect('/login');
-            }
-        }
         
-        return ''; // This should never be reached due to redirects
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Please enter a valid email address';
+            
+            if ($isHtmx) {
+                return $this->view->render('partials/login', [
+                    'title' => 'Admin Login - Restore Removal',
+                    'error' => $error
+                ]);
+            } else {
+                $_SESSION['login_error'] = $error;
+                $this->redirect('/login');
+                return '';
+            }
+        }
+
+        try {
+            $magicLink = Auth::generateMagicLink($email);
+            
+            if ($magicLink) {
+                // Send magic link email
+                $mailer = Mailer::getInstance();
+                $emailSent = $mailer->sendMagicLink($magicLink['user'], $magicLink['url']);
+                
+                if (!$emailSent) {
+                    // Log the error but don't reveal it to the user
+                    error_log('Failed to send magic link email for user: ' . $email);
+                }
+            }
+
+            // Don't reveal whether the email exists or if email sending failed
+            $success = 'If your email is registered, you will receive a login link shortly.';
+            
+            if ($isHtmx) {
+                return $this->view->render('partials/login', [
+                    'title' => 'Admin Login - Restore Removal',
+                    'success' => $success
+                ]);
+            } else {
+                $_SESSION['login_success'] = $success;
+                $this->redirect('/login');
+                return '';
+            }
+
+        } catch (\Exception $e) {
+            error_log('Magic link request error: ' . $e->getMessage());
+            
+            // Still show success message to prevent email enumeration
+            $success = 'If your email is registered, you will receive a login link shortly.';
+            
+            if ($isHtmx) {
+                return $this->view->render('partials/login', [
+                    'title' => 'Admin Login - Restore Removal',
+                    'success' => $success
+                ]);
+            } else {
+                $_SESSION['login_success'] = $success;
+                $this->redirect('/login');
+                return '';
+            }
+        }
+    }
+
+    public function verifyMagicLink(string $token): string
+    {
+        try {
+            if (Auth::loginWithMagicLink($token)) {
+                $this->redirect('/admin');
+            } else {
+                $_SESSION['login_error'] = 'This login link has expired or is invalid. Please request a new one.';
+                $this->redirect('/login');
+            }
+        } catch (\Exception $e) {
+            error_log('Magic link verification error: ' . $e->getMessage());
+            $_SESSION['login_error'] = 'This login link has expired or is invalid. Please request a new one.';
+            $this->redirect('/login');
+        }
+        return ''; // This should never be reached due to redirect
     }
 
     public function logout(): string

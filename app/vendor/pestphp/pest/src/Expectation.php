@@ -330,7 +330,7 @@ final class Expectation
      * @param  array<int, mixed>  $parameters
      * @return Expectation<TValue>|HigherOrderExpectation<Expectation<TValue>, TValue>
      */
-    public function __call(string $method, array $parameters): Expectation|HigherOrderExpectation|PendingArchExpectation
+    public function __call(string $method, array $parameters): Expectation|HigherOrderExpectation|PendingArchExpectation|ArchExpectation
     {
         if (! self::hasMethod($method)) {
             if (! is_object($this->value) && method_exists(PendingArchExpectation::class, $method)) {
@@ -354,6 +354,10 @@ final class Expectation
         $closure = $this->getExpectationClosure($method);
         $reflectionClosure = new \ReflectionFunction($closure);
         $expectation = $reflectionClosure->getClosureThis();
+
+        if ($reflectionClosure->getReturnType()?->__toString() === ArchExpectation::class) {
+            return $closure(...$parameters);
+        }
 
         assert(is_object($expectation));
 
@@ -888,6 +892,14 @@ final class Expectation
     public function toUseNothing(): ArchExpectation
     {
         return ToUseNothing::make($this);
+    }
+
+    /**
+     * Asserts that the source code of the given expectation target does not include suspicious characters.
+     */
+    public function toHaveSuspiciousCharacters(): ArchExpectation
+    {
+        throw InvalidExpectation::fromMethods(['toHaveSuspiciousCharacters']);
     }
 
     /**

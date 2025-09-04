@@ -367,4 +367,14 @@ class Pool implements ArrayAccess
     {
         $this->stopped = true;
     }
+
+    public function clearFinished()
+    {
+        $this->finished = [];
+    }
+
+    public function clearResults()
+    {
+        $this->results = [];
+    }
 }

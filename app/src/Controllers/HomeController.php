@@ -11,12 +11,12 @@ class HomeController extends Controller
     public function index(): string
     {
         $data = [
-            'title' => 'Professional Junk Removal Services in Central Florida',
-            'meta_description' => 'Hassle-free junk removal in Central Florida. Professional, reliable service with free estimates. Call (239) 412-1566 today!',
+            'title' => 'MyRestorePro - Professinal Restoration Services in Central Florida',
+            'meta_description' => 'Hassle-free , Professional, reliable service with free estimates. Call (727) 692-8167 today!',
             'hero' => [
-                'title' => 'Professional Junk Removal Services',
-                'subtitle' => 'Hassle-Free Cleanouts in Central Florida',
-                'description' => 'From single items to full property cleanouts, we handle it all with professional service and environmental responsibility.',
+                'title' => 'Professional Restoration Services',
+                'subtitle' => 'Hassle-Free, Reliable Professinal Restoration Services in Central Florida',
+                'description' => 'From property cleanouts, To home remodels, we handle it all.',
             ],
             'services' => $this->getServices(),
             'benefits' => $this->getBenefits(),
@@ -65,19 +65,19 @@ class HomeController extends Controller
     {
         return [
             [
-                'image' => '/static/images/benefits/professional.svg',
-                'title' => 'Professional Service',
-                'description' => 'Licensed, insured, and reliable team',
+                'icon' => 'icon-[streamline-ultimate--delivery-truck-clock-bold]',
+                'title' => 'Same-day service',
+                'description' => 'Book today. We will call before we arrive',
             ],
             [
-                'image' => '/static/images/benefits/eco-friendly.svg',
-                'title' => 'Eco-Friendly',
-                'description' => 'We donate and recycle whenever possible',
-            ],
-            [
-                'image' => '/static/images/benefits/free-estimate.svg',
-                'title' => 'Free Estimates',
+                'icon' => 'icon-[streamline-ultimate--shipping-logistic-free-shipping-delivery-truck-bold]',
+                'title' => 'Get a free estimate',
                 'description' => 'Transparent pricing with no hidden fees',
+            ],
+            [
+                'icon' => 'icon-[streamline-ultimate--workflow-teamwork-user-high-five-bold]',
+                'title' => 'Friendly, professional teams',
+                'description' => 'Licensed, insured, and reliable team',
             ],
         ];
     }

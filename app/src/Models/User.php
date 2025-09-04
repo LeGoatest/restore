@@ -10,6 +10,11 @@ use App\Core\Database;
 class User extends Model
 {
     protected static string $table = 'users';
+    protected static array $fillable = [
+        'username', 'email', 'password', 'first_name', 'last_name', 
+        'role', 'is_active', 'magic_link_token', 'magic_link_expires'
+    ];
+    protected static array $allowHtml = [];
     
     public static function findById(int $id): ?array
     {
@@ -103,9 +108,50 @@ class User extends Model
         );
     }
     
-    public static function count(): int
+    public static function count(?int $userId = null): int
     {
-        $result = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table . " WHERE is_active = 1");
+        $sql = "SELECT COUNT(*) as count FROM " . self::$table . " WHERE is_active = 1";
+        $params = [];
+        
+        // For User model, we typically don't filter by user_id since it's an admin resource
+        // but we keep the parameter for compatibility with the parent class
+        
+        $result = Database::fetchOne($sql, $params);
         return $result['count'] ?? 0;
+    }
+
+    public static function storeMagicLinkToken(int $userId, string $token, int $expires): int
+    {
+        return Database::query(
+            "UPDATE " . self::$table . " SET 
+                magic_link_token = ?, 
+                magic_link_expires = datetime(?, 'unixepoch'), 
+                updated_at = CURRENT_TIMESTAMP 
+            WHERE id = ?",
+            [$token, $expires, $userId]
+        )->rowCount();
+    }
+
+    public static function findByMagicLinkToken(string $token): ?array
+    {
+        return Database::fetchOne(
+            "SELECT *, strftime('%s', magic_link_expires) as magic_link_expires FROM " . self::$table . " 
+            WHERE magic_link_token = ? 
+            AND magic_link_expires > datetime('now') 
+            AND is_active = 1",
+            [$token]
+        );
+    }
+
+    public static function clearMagicLinkToken(int $userId): int
+    {
+        return Database::query(
+            "UPDATE " . self::$table . " SET 
+                magic_link_token = NULL, 
+                magic_link_expires = NULL, 
+                updated_at = CURRENT_TIMESTAMP 
+            WHERE id = ?",
+            [$userId]
+        )->rowCount();
     }
 }

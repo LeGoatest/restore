@@ -1,6 +1,6 @@
 {
-    "name": "restore-removal/website",
-    "description": "Restore Removal - Junk Removal Service Website",
+    "name": "my-restore-pro/website",
+    "description": "MyRestorePro - Service Website",
     "type": "project",
     "require": {
         "php": ">=8.1",
@@ -17,10 +17,7 @@
         "nesbot/carbon": "^3.10",
         "phpmailer/phpmailer": "^6.10",
         "propaganistas/laravel-phone": "^6.0",
-        "ramsey/uuid": "^4.9",
         "spatie/async": "^1.6",
-        "spipu/html2pdf": "^4.6",
-        "vlucas/phpdotenv": "^5.6",
         "zircote/swagger-php": "^5.3"
     },
     "autoload": {

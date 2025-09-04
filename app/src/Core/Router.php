@@ -20,12 +20,28 @@ class Router
 
     public function resolve(string $method, string $path): array
     {
+        // First try exact match
         $route = $this->routes[$method][$path] ?? null;
         
-        if (!$route) {
-            throw new \Exception('Route not found', 404);
+        if ($route) {
+            return $route;
         }
-
-        return $route;
+        
+        // Try parameterized routes
+        foreach ($this->routes[$method] ?? [] as $routePath => $routeData) {
+            if (strpos($routePath, '{') !== false) {
+                $pattern = preg_replace('/\{[^}]+\}/', '([^/]+)', $routePath);
+                $pattern = '#^' . $pattern . '$#';
+                
+                if (preg_match($pattern, $path, $matches)) {
+                    // Extract parameters
+                    array_shift($matches); // Remove full match
+                    $routeData['params'] = $matches;
+                    return $routeData;
+                }
+            }
+        }
+        
+        throw new \Exception('Route not found', 404);
     }
 }

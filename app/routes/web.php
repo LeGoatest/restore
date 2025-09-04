@@ -6,16 +6,17 @@ use App\Controllers\ContactController;
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\DebugController;
-use App\Controllers\CMSController;
-use App\Controllers\CMSFrontendController;
+
 use App\Controllers\PartialsController;
 use App\Controllers\ApiController;
 
-// Public routes (CMS-powered)
-$router->get('/', CMSFrontendController::class, 'home');
-$router->get('/services', CMSFrontendController::class, 'services');
-$router->get('/contact', CMSFrontendController::class, 'contact');
+// Public routes
+$router->get('/', HomeController::class, 'index');
+$router->get('/services', ServicesController::class, 'index');
+$router->get('/contact', ContactController::class, 'index');
 $router->post('/contact', ContactController::class, 'submit');
+$router->get('/quote', ContactController::class, 'quote');
+$router->post('/quote', ContactController::class, 'submitQuote');
 
 // Service category partials for HTMX
 $router->get('/partials/junk-removal', PartialsController::class, 'junkRemoval');
@@ -25,7 +26,8 @@ $router->get('/partials/cleaning', PartialsController::class, 'cleaning');
 
 // Authentication routes
 $router->get('/login', AuthController::class, 'loginForm');
-$router->post('/login', AuthController::class, 'login');
+$router->post('/login/request', AuthController::class, 'requestLogin');
+$router->get('/login/verify/{token}', AuthController::class, 'verifyMagicLink');
 $router->get('/logout', AuthController::class, 'logout');
 
 // Debug routes (remove in production)
@@ -37,29 +39,11 @@ $router->get('/admin', AdminController::class, 'dashboard');
 $router->get('/admin/contacts', AdminController::class, 'contacts');
 $router->get('/admin/quotes', AdminController::class, 'quotes');
 $router->get('/admin/services', AdminController::class, 'services');
-$router->get('/admin/cms', CMSController::class, 'dashboard');
-$router->get('/admin/cms/system-builder', CMSController::class, 'systemBuilder');
-$router->get('/admin/cms/blocks', CMSController::class, 'blocks');
-$router->get('/admin/cms/blocks/create', CMSController::class, 'createBlock');
-$router->post('/admin/cms/blocks/create', CMSController::class, 'createBlock');
-$router->get('/admin/cms/blueprints', CMSController::class, 'blueprints');
-$router->get('/admin/cms/blueprints/create', CMSController::class, 'createBlueprint');
-$router->post('/admin/cms/blueprints/create', CMSController::class, 'createBlueprint');
-$router->get('/admin/cms/blocks/edit', CMSController::class, 'editBlock');
-$router->get('/admin/cms/blocks/builder', CMSController::class, 'blockBuilder');
-$router->post('/admin/cms/blocks/update', CMSController::class, 'updateBlock');
-$router->post('/admin/cms/blocks/delete', CMSController::class, 'deleteBlock');
-$router->get('/admin/cms/blueprints/edit', CMSController::class, 'editBlueprint');
-$router->post('/admin/cms/blueprints/update', CMSController::class, 'updateBlueprint');
-$router->post('/admin/cms/blueprints/delete', CMSController::class, 'deleteBlueprint');
-$router->get('/admin/cms/documents', CMSController::class, 'documents');
-$router->get('/admin/cms/documents/create', CMSController::class, 'createDocument');
-$router->post('/admin/cms/documents/create', CMSController::class, 'createDocument');
-$router->get('/admin/cms/documents/edit', CMSController::class, 'editDocument');
-$router->post('/admin/cms/documents/update', CMSController::class, 'updateDocument');
-$router->post('/admin/cms/documents/delete', CMSController::class, 'deleteDocument');
+$router->get('/admin/hero', AdminController::class, 'hero');
 $router->get('/admin/users', AdminController::class, 'users');
 $router->get('/admin/settings', AdminController::class, 'settings');
+$router->post('/admin/settings/save', AdminController::class, 'saveSettings');
+$router->post('/admin/hero/save', AdminController::class, 'saveHero');
 
-// API routes
-$router->post('/api/track', ApiController::class, 'track');
+// Tracking route (using GET to avoid POST restrictions)
+$router->get('/analytics/track', ApiController::class, 'track');

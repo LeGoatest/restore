@@ -39,16 +39,16 @@
                 </ul>
             </div>
 
-            <!-- CTA Button / User Menu -->
+            <!-- CTA Button / User Menu - Hidden on mobile -->
             <?php if (Auth::isAuthenticated()): ?>
-                <div class="btn-cta">
+                <div class="btn-cta hidden md:flex">
                     <span class="text-white mr-4">Welcome, <?= htmlspecialchars(Auth::getUsername()) ?></span>
                     <a href="/logout" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-semibold transition-colors">
                         Logout
                     </a>
                 </div>
             <?php else: ?>
-                <div class="btn-cta">
+                <div class="btn-cta hidden md:block">
                     <a href="/contact" hx-get="/contact" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
                         Get in Touch
                     </a>

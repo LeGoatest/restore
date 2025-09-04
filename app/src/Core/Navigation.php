@@ -10,9 +10,9 @@ class Navigation
     {
         return [
             ['url' => '/', 'text' => 'Home', 'view' => 'home'],
-            ['url' => '/services', 'text' => 'Services', 'view' => 'services'],
+           // ['url' => '/services', 'text' => 'Services', 'view' => 'services'],
             ['url' => '/contact', 'text' => 'Contact', 'view' => 'contact'],
-            ['url' => '/login', 'text' => 'Login', 'view' => 'login']
+           // ['url' => '/login', 'text' => 'Login', 'view' => 'login']
         ];
     }
 

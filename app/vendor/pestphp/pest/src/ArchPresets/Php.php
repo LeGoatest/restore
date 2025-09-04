@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\ArchPresets;
 
+use Pest\Arch\Contracts\ArchExpectation;
+use Pest\Expectation;
+
 /**
  * @internal
  */
@@ -89,5 +92,9 @@ final class Php extends AbstractPreset
             'xdebug_var_dump',
             'trap',
         ])->not->toBeUsed();
+
+        $this->eachUserNamespace(
+            fn (Expectation $namespace): ArchExpectation => $namespace->not->toHaveSuspiciousCharacters(),
+        );
     }
 }

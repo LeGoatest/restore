@@ -12,6 +12,9 @@ require_once __DIR__ . '/../app/vendor/autoload.php';
 use App\Core\Router;
 use App\Core\Database;
 
+// Start session first
+session_start();
+
 // Initialize core services
 Database::init();
 
@@ -32,9 +35,17 @@ try {
     // Instantiate controller and call method
     $controllerClass = $route['controller'];
     $controllerMethod = $route['method'];
+    $params = $route['params'] ?? [];
     
     $controller = new $controllerClass();
-    $response = $controller->$controllerMethod();
+    $response = $controller->$controllerMethod(...$params);
+    
+    // Debug: Check if response is empty
+    if (empty($response) && $path === '/login' && $method === 'POST') {
+        error_log("Login POST returned empty response");
+        echo "Login failed - empty response";
+        exit;
+    }
     
     // Output response
     echo $response;
