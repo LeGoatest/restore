@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'restore-removal/website',
+        'name' => 'my-restore-pro/website',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '738fae131eed66ade2b63a8340cbd28bb34c941c',
+        'reference' => 'fc4f2d1331781901bdd0b3f6f77869513c5ba9bf',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -388,6 +388,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'my-restore-pro/website' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'fc4f2d1331781901bdd0b3f6f77869513c5ba9bf',
+            'type' => 'project',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'myclabs/deep-copy' => array(
             'pretty_version' => '1.13.4',
             'version' => '1.13.4.0',
@@ -766,15 +775,6 @@
             'reference' => '120b605dfeb996808c31b6477290a714d356e822',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ralouphie/getallheaders',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'restore-removal/website' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '738fae131eed66ade2b63a8340cbd28bb34c941c',
-            'type' => 'project',
-            'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
