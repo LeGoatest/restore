@@ -45,5 +45,18 @@ $router->get('/admin/settings', AdminController::class, 'settings');
 $router->post('/admin/settings/save', AdminController::class, 'saveSettings');
 $router->post('/admin/hero/save', AdminController::class, 'saveHero');
 
+// Admin HTMX routes for contacts and quotes
+$router->post('/admin/contacts/update-status', AdminController::class, 'updateContactStatus');
+$router->delete('/admin/contacts/delete', AdminController::class, 'deleteContact');
+$router->post('/admin/quotes/update-status', AdminController::class, 'updateQuoteStatus');
+$router->post('/admin/quotes/update', AdminController::class, 'updateQuote');
+$router->delete('/admin/quotes/delete', AdminController::class, 'deleteQuote');
+
+// Admin HTMX routes for service locations
+$router->post('/admin/settings/add-location', AdminController::class, 'addLocation');
+$router->post('/admin/settings/remove-location', AdminController::class, 'removeLocation');
+$router->post('/admin/settings/update-location', AdminController::class, 'updateLocation');
+$router->post('/admin/settings/load-sample-locations', AdminController::class, 'loadSampleLocations');
+
 // Tracking route (using GET to avoid POST restrictions)
 $router->get('/analytics/track', ApiController::class, 'track');

@@ -18,7 +18,7 @@ function isCurrentAdminPage($view) {
             </div>
             <div>
                 <h2 class="text-lg font-semibold">Admin Panel</h2>
-                <p class="text-xs text-gray-400">Restore Removal</p>
+                <p class="text-xs text-gray-400">Restore</p>
             </div>
         </div>
     </div>

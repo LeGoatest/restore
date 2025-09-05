@@ -1,5 +1,7 @@
 <?php
 use App\Core\Security;
+use App\Models\ServiceLocation;
+use App\Models\Service;
 ?>
 
 <!-- Website Settings Page -->
@@ -12,9 +14,9 @@ use App\Core\Security;
                 <i class="icon-[mdi--cog] mr-2"></i>
                 General
             </button>
-            <button class="settings-tab" data-tab="business">
-                <i class="icon-[mdi--office-building] mr-2"></i>
-                Business Info
+            <button class="settings-tab" data-tab="service">
+                <i class="icon-[mdi--map-marker-radius] mr-2"></i>
+                Service Area
             </button>
             <button class="settings-tab" data-tab="seo">
                 <i class="icon-[mdi--search-web] mr-2"></i>
@@ -45,25 +47,24 @@ use App\Core\Security;
     <!-- General Settings Tab -->
     <div id="general-tab" class="settings-content active">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">General Website Settings</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Basic Information</h3>
             
-            <form class="space-y-8" hx-post="/admin/settings/save" hx-target="#save-result">
+            <form class="space-y-8" hx-post="/admin/settings/save" hx-target="#save-result" enctype="multipart/form-data">
                 <input type="hidden" name="category" value="general">
                 <?= Security::getCsrfField() ?>
 
                 <!-- Basic Site Information -->
                 <div class="space-y-6">
-                    <h4 class="text-md font-medium text-gray-800">Basic Site Information</h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Site Title
+                                Company Name
                             </label>
                             <input type="text" 
                                    name="general[site_title]"
                                    class="form-input" 
-                                   value="<?= htmlspecialchars($settings['general']['site_title'] ?? 'Restore Removal') ?>"
+                                   value="<?= htmlspecialchars($settings['general']['site_title'] ?? 'MyRestorePro') ?>"
                                    placeholder="Enter site title">
                         </div>
                         
@@ -74,9 +75,33 @@ use App\Core\Security;
                             <input type="text" 
                                    name="general[tagline]"
                                    class="form-input" 
-                                   value="<?= htmlspecialchars($settings['general']['tagline'] ?? 'Professional Junk Removal Services') ?>"
+                                   value="<?= htmlspecialchars($settings['general']['tagline'] ?? '') ?>"
                                    placeholder="Enter site tagline">
                         </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Primary Phone
+                            </label>
+                            <input type="tel" 
+                                   name="general[phone]"
+                                   class="form-input" 
+                                   value="<?= htmlspecialchars($settings['general']['phone'] ?? '') ?>"
+                                   placeholder="Enter primary phone">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Primary Email
+                            </label>
+                            <input type="email" 
+                                   name="general[email]"
+                                   class="form-input" 
+                                   value="<?= htmlspecialchars($settings['general']['email'] ?? '') ?>"
+                                   placeholder="Enter primary email">
+                            <p class="text-sm text-gray-500 mt-1">Used for contact and system notifications</p>
+                        </div>
+
                     </div>
                 </div>
 
@@ -89,22 +114,30 @@ use App\Core\Security;
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Logo
                             </label>
-                            <div class="flex items-center space-x-4">
-                                <div class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
-                                    <?php if (!empty($settings['general']['logo'])): ?>
-                                        <img src="<?= htmlspecialchars($settings['general']['logo']) ?>" 
-                                             alt="Site logo" 
-                                             class="max-w-full max-h-full">
-                                    <?php else: ?>
-                                        <i class="icon-[heroicons--photo-20-solid] text-gray-400 text-2xl"></i>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="flex-1">
-                                    <input type="file" 
-                                           name="general[logo_file]"
-                                           class="form-input"
-                                           accept="image/*">
-                                    <p class="text-sm text-gray-500 mt-1">Recommended size: 200x60px</p>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-4">
+                                    <div id="logo-preview" class="w-20 h-20 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                                        <?php if (!empty($settings['general']['logo'])): ?>
+                                            <img src="<?= htmlspecialchars($settings['general']['logo']) ?>" 
+                                                 alt="Site logo" 
+                                                 class="max-w-full max-h-full object-contain">
+                                        <?php else: ?>
+                                            <i class="icon-[heroicons--photo-20-solid] text-gray-400 text-2xl"></i>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" 
+                                               name="general[logo_file]"
+                                               class="form-input"
+                                               accept="image/*"
+                                               onchange="previewImage(this, 'logo-preview')">
+                                        <p class="text-sm text-gray-500 mt-1">Recommended size: 200x60px</p>
+                                        <?php if (!empty($settings['general']['logo'])): ?>
+                                            <p class="text-xs text-blue-600 mt-1">
+                                                Current: <?= htmlspecialchars(basename($settings['general']['logo'])) ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,113 +146,323 @@ use App\Core\Security;
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Favicon
                             </label>
-                            <div class="flex items-center space-x-4">
-                                <div class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
-                                    <?php if (!empty($settings['general']['favicon'])): ?>
-                                        <img src="<?= htmlspecialchars($settings['general']['favicon']) ?>" 
-                                             alt="Favicon" 
-                                             class="max-w-full max-h-full">
-                                    <?php else: ?>
-                                        <i class="icon-[heroicons--photo-20-solid] text-gray-400"></i>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="flex-1">
-                                    <input type="file" 
-                                           name="general[favicon_file]"
-                                           class="form-input"
-                                           accept="image/x-icon,image/png">
-                                    <p class="text-sm text-gray-500 mt-1">Size: 32x32px or 16x16px</p>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-4">
+                                    <div id="favicon-preview" class="w-12 h-12 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                                        <?php if (!empty($settings['general']['favicon'])): ?>
+                                            <img src="<?= htmlspecialchars($settings['general']['favicon']) ?>" 
+                                                 alt="Favicon" 
+                                                 class="max-w-full max-h-full object-contain">
+                                        <?php else: ?>
+                                            <i class="icon-[heroicons--photo-20-solid] text-gray-400 text-lg"></i>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" 
+                                               name="general[favicon_file]"
+                                               class="form-input"
+                                               accept="image/x-icon,image/png"
+                                               onchange="previewImage(this, 'favicon-preview')">
+                                        <p class="text-sm text-gray-500 mt-1">Size: 32x32px or 16x16px</p>
+                                        <?php if (!empty($settings['general']['favicon'])): ?>
+                                            <p class="text-xs text-blue-600 mt-1">
+                                                Current: <?= htmlspecialchars(basename($settings['general']['favicon'])) ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Administration -->
+
+
+                <!-- Location & Service Area -->
                 <div class="space-y-6 pt-6 border-t">
-                    <h4 class="text-md font-medium text-gray-800">Administration</h4>
+                    <h4 class="text-md font-medium text-gray-800">Location</h4>
+                    
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Timezone
+                        </label>
+                        <select name="general[timezone]" class="form-select">
+                            <?php
+                            $timezones = [
+                                'America/New_York' => 'Eastern Time',
+                                'America/Chicago' => 'Central Time',
+                                'America/Denver' => 'Mountain Time',
+                                'America/Los_Angeles' => 'Pacific Time',
+                                'America/Phoenix' => 'Arizona',
+                                'America/Anchorage' => 'Alaska',
+                                'Pacific/Honolulu' => 'Hawaii'
+                            ];
+                            foreach ($timezones as $tz => $label):
+                                $selected = ($settings['general']['timezone'] ?? 'America/New_York') === $tz ? 'selected' : '';
+                            ?>
+                                <option value="<?= $tz ?>" <?= $selected ?>><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Date Format
+                        </label>
+                        <select name="general[date_format]" class="form-select">
+                            <?php
+                            $date = time();
+                            $formats = [
+                                'F j, Y' => date('F j, Y', $date),
+                                'Y-m-d' => date('Y-m-d', $date),
+                                'm/d/Y' => date('m/d/Y', $date),
+                                'd/m/Y' => date('d/m/Y', $date)
+                            ];
+                            foreach ($formats as $format => $example):
+                                $selected = ($settings['general']['date_format'] ?? 'F j, Y') === $format ? 'selected' : '';
+                            ?>
+                                <option value="<?= $format ?>" <?= $selected ?>><?= $example ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Time Format
+                        </label>
+                        <select name="general[time_format]" class="form-select">
+                            <?php
+                            $formats = [
+                                'g:i a' => date('g:i a', $date),
+                                'g:i A' => date('g:i A', $date),
+                                'H:i' => date('H:i', $date)
+                            ];
+                            foreach ($formats as $format => $example):
+                                $selected = ($settings['general']['time_format'] ?? 'g:i a') === $format ? 'selected' : '';
+                            ?>
+                                <option value="<?= $format ?>" <?= $selected ?>><?= $example ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+
+                    <div class="grid grid-cols-1 gap-6 pt-4 border-t">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Admin Email Address
+                                Business Address
                             </label>
-                            <input type="email" 
-                                   name="general[admin_email]"
-                                   class="form-input" 
-                                   value="<?= htmlspecialchars($settings['general']['admin_email'] ?? '') ?>"
-                                   placeholder="Enter admin email">
-                            <p class="text-sm text-gray-500 mt-1">System notifications will be sent here</p>
+                            <input name="general[address]" 
+                                    class="form-textarea" 
+                                    rows="3"
+                                    placeholder="Enter full business address"><?= htmlspecialchars($settings['general']['address'] ?? '') ?></input>
                         </div>
                     </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    City
+                                </label>
+                                <input type="text" 
+                                       name="general[city]"
+                                       class="form-input" 
+                                       value="<?= htmlspecialchars($settings['general']['city'] ?? '') ?>"
+                                       placeholder="Enter city">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    State
+                                </label>
+                                <input type="text" 
+                                       name="general[state]"
+                                       class="form-input" 
+                                       value="<?= htmlspecialchars($settings['general']['state'] ?? 'FL') ?>">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    ZIP Code
+                                </label>
+                                <input type="text" 
+                                       name="general[zip]"
+                                       class="form-input" 
+                                       value="<?= htmlspecialchars($settings['general']['zip'] ?? '') ?>"
+                                       placeholder="Enter ZIP code">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Service Area Radius (miles)
+                                </label>
+                                <input type="number" 
+                                       name="general[service_radius]"
+                                       class="form-input" 
+                                       value="<?= htmlspecialchars($settings['general']['service_radius'] ?? '') ?>"
+                                       placeholder="Enter service radius">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Counties Served
+                                </label>
+                                <input type="text" 
+                                       name="general[counties]"
+                                       class="form-input" 
+                                       value="<?= htmlspecialchars($settings['general']['counties'] ?? '') ?>"
+                                       placeholder="Enter counties served, separated by commas">
+                            </div>
+                        </div>
+
+                        <!-- Coordinates for SEO -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Latitude
+                                </label>
+                                <input type="number" 
+                                       name="general[latitude]"
+                                       class="form-input" 
+                                       step="any"
+                                       value="<?= htmlspecialchars($settings['general']['latitude'] ?? '') ?>"
+                                       placeholder="28.994402">
+                                <p class="text-sm text-gray-500 mt-1">Used for local SEO and maps</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Longitude
+                                </label>
+                                <input type="number" 
+                                       name="general[longitude]"
+                                       class="form-input" 
+                                       step="any"
+                                       value="<?= htmlspecialchars($settings['general']['longitude'] ?? '') ?>"
+                                       placeholder="-82.442515">
+                                <p class="text-sm text-gray-500 mt-1">You can get coordinates from Google Maps</p>
+                            </div>
+                        </div>
                 </div>
 
-                <!-- Localization -->
+                <!-- Service Hours -->
                 <div class="space-y-6 pt-6 border-t">
-                    <h4 class="text-md font-medium text-gray-800">Localization</h4>
+                    <h4 class="text-md font-medium text-gray-800">Service Hours</h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Timezone
+                    <div class="space-y-4">
+                        <!-- Monday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Monday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][monday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['monday']['open'] ?? '07:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][monday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['monday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][monday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['monday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
                             </label>
-                            <select name="general[timezone]" class="form-select">
-                                <?php
-                                $timezones = [
-                                    'America/New_York' => 'Eastern Time',
-                                    'America/Chicago' => 'Central Time',
-                                    'America/Denver' => 'Mountain Time',
-                                    'America/Los_Angeles' => 'Pacific Time',
-                                    'America/Phoenix' => 'Arizona',
-                                    'America/Anchorage' => 'Alaska',
-                                    'Pacific/Honolulu' => 'Hawaii'
-                                ];
-                                foreach ($timezones as $tz => $label):
-                                    $selected = ($settings['general']['timezone'] ?? 'America/New_York') === $tz ? 'selected' : '';
-                                ?>
-                                    <option value="<?= $tz ?>" <?= $selected ?>><?= $label ?></option>
-                                <?php endforeach; ?>
-                            </select>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Date Format
+                        <!-- Tuesday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Tuesday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][tuesday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['tuesday']['open'] ?? '07:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][tuesday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['tuesday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][tuesday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['tuesday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
                             </label>
-                            <select name="general[date_format]" class="form-select">
-                                <?php
-                                $date = time();
-                                $formats = [
-                                    'F j, Y' => date('F j, Y', $date),
-                                    'Y-m-d' => date('Y-m-d', $date),
-                                    'm/d/Y' => date('m/d/Y', $date),
-                                    'd/m/Y' => date('d/m/Y', $date)
-                                ];
-                                foreach ($formats as $format => $example):
-                                    $selected = ($settings['general']['date_format'] ?? 'F j, Y') === $format ? 'selected' : '';
-                                ?>
-                                    <option value="<?= $format ?>" <?= $selected ?>><?= $example ?></option>
-                                <?php endforeach; ?>
-                            </select>
                         </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Time Format
+                        
+                        <!-- Wednesday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Wednesday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][wednesday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['wednesday']['open'] ?? '07:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][wednesday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['wednesday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][wednesday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['wednesday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
                             </label>
-                            <select name="general[time_format]" class="form-select">
-                                <?php
-                                $formats = [
-                                    'g:i a' => date('g:i a', $date),
-                                    'g:i A' => date('g:i A', $date),
-                                    'H:i' => date('H:i', $date)
-                                ];
-                                foreach ($formats as $format => $example):
-                                    $selected = ($settings['general']['time_format'] ?? 'g:i a') === $format ? 'selected' : '';
-                                ?>
-                                    <option value="<?= $format ?>" <?= $selected ?>><?= $example ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        </div>
+                        
+                        <!-- Thursday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Thursday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][thursday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['thursday']['open'] ?? '07:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][thursday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['thursday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][thursday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['thursday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Friday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Friday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][friday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['friday']['open'] ?? '07:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][friday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['friday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][friday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['friday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Saturday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Saturday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][saturday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['saturday']['open'] ?? '08:00') ?>">
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][saturday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['saturday']['close'] ?? '18:00') ?>">
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][saturday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['saturday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Sunday -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700">Sunday</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" name="general[hours][sunday][open]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['sunday']['open'] ?? '09:00') ?>" <?= !empty($settings['general']['hours']['sunday']['closed']) ? 'disabled' : '' ?>>
+                                <span class="text-gray-500">to</span>
+                                <input type="time" name="general[hours][sunday][close]" class="form-input w-32" value="<?= htmlspecialchars($settings['general']['hours']['sunday']['close'] ?? '17:00') ?>" <?= !empty($settings['general']['hours']['sunday']['closed']) ? 'disabled' : '' ?>>
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="general[hours][sunday][closed]" class="mr-2" <?= !empty($settings['general']['hours']['sunday']['closed']) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-600">Closed</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -262,291 +505,377 @@ use App\Core\Security;
         </div>
     </div>
 
-    <!-- Business Info Tab -->
-    <div id="business-tab" class="settings-content">
+    <!-- Service Area Tab -->
+    <div id="service-tab" class="settings-content">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">Business Information</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Service Area Configuration</h3>
             
-            <form class="space-y-8" hx-post="/admin/settings/save" hx-target="#save-result">
-                <input type="hidden" name="category" value="business">
-                
-                <!-- Basic Business Info -->
+            <form class="space-y-8" hx-post="/admin/settings/save" hx-target="#save-result" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="service">
+                <?= Security::getCsrfField() ?>
+
+                <!-- Service Coverage -->
                 <div class="space-y-6">
-                    <h4 class="text-md font-medium text-gray-800">Basic Information</h4>
+                    <h4 class="text-md font-medium text-gray-800">Service Coverage</h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Business Name
+                                Primary Service Radius (miles)
                             </label>
-                            <input type="text" 
-                                   name="business[name]"
+                            <input type="number" 
+                                   name="service[primary_radius]"
                                    class="form-input" 
-                                   placeholder="Enter business name">
+                                   value="<?= htmlspecialchars($settings['service']['primary_radius'] ?? '25') ?>"
+                                   placeholder="Enter primary service radius">
+                            <p class="text-sm text-gray-500 mt-1">Standard service area from your location</p>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Business License
+                                Extended Service Radius (miles)
                             </label>
-                            <input type="text" 
-                                   name="business[license]"
+                            <input type="number" 
+                                   name="service[extended_radius]"
                                    class="form-input" 
-                                   placeholder="Enter license number">
+                                   value="<?= htmlspecialchars($settings['service']['extended_radius'] ?? '50') ?>"
+                                   placeholder="Enter extended service radius">
+                            <p class="text-sm text-gray-500 mt-1">Extended coverage with additional fees</p>
                         </div>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Insurance Policy Number
+                            Counties Served
                         </label>
-                        <input type="text" 
-                               name="business[insurance]"
-                               class="form-input" 
-                               placeholder="Enter insurance policy">
+                        <textarea name="service[counties]" 
+                                class="form-textarea" 
+                                rows="3"
+                                placeholder="Enter counties served, separated by commas"><?= htmlspecialchars($settings['service']['counties'] ?? '') ?></textarea>
+                        <p class="text-sm text-gray-500 mt-1">List all counties where you provide services</p>
                     </div>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="space-y-6 pt-6 border-t">
-                    <h4 class="text-md font-medium text-gray-800">Contact Information</h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Primary Phone
-                            </label>
-                            <input type="tel" 
-                                   name="business[phone]"
-                                   class="form-input" 
-                                   placeholder="Enter primary phone">
+                    <!-- Service Locations (Schema.org Format) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Service Locations
+                                </label>
+                                <p class="text-sm text-gray-500">Add cities where you provide services (used for schema.org structured data)</p>
+                            </div>
+                            <button type="button" 
+                                    id="add-location-btn"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                    onclick="addNewLocationInput()">
+                                <i class="icon-[heroicons--plus-20-solid] mr-1"></i>
+                                Add Location
+                            </button>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Secondary Phone
-                            </label>
-                            <input type="tel" 
-                                   name="business[phone_secondary]"
-                                   class="form-input" 
-                                   placeholder="Enter secondary phone (optional)">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Primary Email
-                            </label>
-                            <input type="email" 
-                                   name="business[email]"
-                                   class="form-input" 
-                                   placeholder="Enter primary email">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Support Email
-                            </label>
-                            <input type="email" 
-                                   name="business[email_support]"
-                                   class="form-input" 
-                                   placeholder="Enter support email">
+                        <div id="service-locations-container" class="space-y-3">
+                            <?php 
+                            // Load locations from database with pagination
+                            $allServiceLocations = ServiceLocation::getAll();
+                            $totalLocations = count($allServiceLocations);
+                            $locationsPerPage = 10;
+                            $currentPage = 1; // Default to first page
+                            $totalPages = ceil($totalLocations / $locationsPerPage);
+                            $offset = ($currentPage - 1) * $locationsPerPage;
+                            $serviceLocations = array_slice($allServiceLocations, $offset, $locationsPerPage);
+                            ?>
+                            
+                            <!-- Pagination Info -->
+                            <?php if ($totalLocations > $locationsPerPage): ?>
+                            <div class="flex items-center justify-between mb-3 p-3 bg-blue-50 rounded-lg">
+                                <div class="text-sm text-gray-600">
+                                    Showing <span id="locations-showing-start">1</span>-<span id="locations-showing-end"><?= min($locationsPerPage, $totalLocations) ?></span> of <span id="locations-total"><?= $totalLocations ?></span> locations
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" 
+                                            id="locations-prev-btn"
+                                            class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onclick="changeLocationsPage(-1)"
+                                            disabled>
+                                        Previous
+                                    </button>
+                                    <span class="text-sm text-gray-600">
+                                        Page <span id="locations-current-page">1</span> of <span id="locations-total-pages"><?= $totalPages ?></span>
+                                    </span>
+                                    <button type="button" 
+                                            id="locations-next-btn"
+                                            class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onclick="changeLocationsPage(1)"
+                                            <?= $totalPages <= 1 ? 'disabled' : '' ?>>
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <!-- Locations List -->
+                            <div id="locations-list">
+                                <?php foreach ($serviceLocations as $location): ?>
+                                <div class="service-location-item flex items-center space-x-3 p-3 bg-gray-50 rounded-lg" data-location-id="<?= $location['id'] ?>">
+                                    <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <div>
+                                            <select class="form-select text-sm location-type" 
+                                                    data-id="<?= $location['id'] ?>"
+                                                    hx-post="/admin/settings/update-location" 
+                                                    hx-target="#service-locations-container"
+                                                    hx-include="[data-id='<?= $location['id'] ?>']">
+                                                <option value="City" <?= $location['type'] === 'City' ? 'selected' : '' ?>>City</option>
+                                                <option value="State" <?= $location['type'] === 'State' ? 'selected' : '' ?>>State</option>
+                                                <option value="PostalCode" <?= $location['type'] === 'PostalCode' ? 'selected' : '' ?>>ZIP Code</option>
+                                                <option value="Country" <?= $location['type'] === 'Country' ? 'selected' : '' ?>>Country</option>
+                                            </select>
+                                            <input type="hidden" name="id" value="<?= $location['id'] ?>" data-id="<?= $location['id'] ?>">
+                                            <input type="hidden" name="type" value="<?= $location['type'] ?>" class="location-type-hidden" data-id="<?= $location['id'] ?>">
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <input type="text" 
+                                                   name="name"
+                                                   class="form-input text-sm" 
+                                                   value="<?= htmlspecialchars($location['name']) ?>"
+                                                   placeholder="Enter location name"
+                                                   data-id="<?= $location['id'] ?>"
+                                                   hx-post="/admin/settings/update-location" 
+                                                   hx-target="#service-locations-container"
+                                                   hx-trigger="blur"
+                                                   hx-include="[data-id='<?= $location['id'] ?>']">
+                                        </div>
+                                    </div>
+                                    <button type="button" 
+                                            class="text-red-500 hover:text-red-700 p-2"
+                                            hx-post="/admin/settings/remove-location" 
+                                            hx-target="#service-locations-container"
+                                            hx-vals='{"id": "<?= $location['id'] ?>"}'>
+                                        <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+                                    </button>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <?php if (empty($allServiceLocations)): ?>
+                            <div id="no-locations-message" class="text-center py-4 text-gray-500">
+                                <p>No service locations added yet.</p>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <!-- Hidden data for JavaScript -->
+                            <script type="application/json" id="locations-data">
+                                <?= json_encode($allServiceLocations) ?>
+                            </script>
                         </div>
                     </div>
                 </div>
 
-                <!-- Location & Service Area -->
+                <!-- Service Types -->
                 <div class="space-y-6 pt-6 border-t">
-                    <h4 class="text-md font-medium text-gray-800">Location & Service Area</h4>
+                    <h4 class="text-md font-medium text-gray-800">Service Types</h4>
                     
                     <div class="grid grid-cols-1 gap-6">
+                        <!-- Primary Services -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Primary Services
+                                    </label>
+                                    <p class="text-sm text-gray-500">Add your main services (e.g., Water Damage Restoration, Mold Remediation)</p>
+                                </div>
+                                <button type="button" 
+                                        id="add-service-btn"
+                                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                        onclick="addNewServiceInput()">
+                                    <i class="icon-[heroicons--plus-20-solid] mr-1"></i>
+                                    Add Service
+                                </button>
+                            </div>
+                            
+                            <div id="primary-services-container" class="space-y-3">
+                                <?php 
+                                // Load primary services from database with pagination
+                                $allPrimaryServices = Service::getByCategory('primary');
+                                $totalServices = count($allPrimaryServices);
+                                $servicesPerPage = 10;
+                                $currentServicePage = 1; // Default to first page
+                                $totalServicePages = ceil($totalServices / $servicesPerPage);
+                                $serviceOffset = ($currentServicePage - 1) * $servicesPerPage;
+                                $primaryServices = array_slice($allPrimaryServices, $serviceOffset, $servicesPerPage);
+                                ?>
+                                
+                                <!-- Pagination Info -->
+                                <?php if ($totalServices > $servicesPerPage): ?>
+                                <div class="flex items-center justify-between mb-3 p-3 bg-green-50 rounded-lg">
+                                    <div class="text-sm text-gray-600">
+                                        Showing <span id="services-showing-start">1</span>-<span id="services-showing-end"><?= min($servicesPerPage, $totalServices) ?></span> of <span id="services-total"><?= $totalServices ?></span> services
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" 
+                                                id="services-prev-btn"
+                                                class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onclick="changeServicesPage(-1)"
+                                                disabled>
+                                            Previous
+                                        </button>
+                                        <span class="text-sm text-gray-600">
+                                            Page <span id="services-current-page">1</span> of <span id="services-total-pages"><?= $totalServicePages ?></span>
+                                        </span>
+                                        <button type="button" 
+                                                id="services-next-btn"
+                                                class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onclick="changeServicesPage(1)"
+                                                <?= $totalServicePages <= 1 ? 'disabled' : '' ?>>
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <!-- Services List -->
+                                <div id="services-list">
+                                    <?php foreach ($primaryServices as $service): ?>
+                                    <div class="service-item flex items-center space-x-3 p-3 bg-gray-50 rounded-lg" data-service-id="<?= $service['id'] ?>">
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div>
+                                                <input type="text" 
+                                                       name="name"
+                                                       class="form-input text-sm" 
+                                                       value="<?= htmlspecialchars($service['name']) ?>"
+                                                       placeholder="Enter service name"
+                                                       data-id="<?= $service['id'] ?>"
+                                                       hx-post="/admin/settings/update-service" 
+                                                       hx-target="#primary-services-container"
+                                                       hx-trigger="blur"
+                                                       hx-include="[data-id='<?= $service['id'] ?>']">
+                                                <input type="hidden" name="id" value="<?= $service['id'] ?>" data-id="<?= $service['id'] ?>">
+                                                <input type="hidden" name="category" value="primary" data-id="<?= $service['id'] ?>">
+                                            </div>
+                                            <div>
+                                                <input type="text" 
+                                                       name="description"
+                                                       class="form-input text-sm" 
+                                                       value="<?= htmlspecialchars($service['description'] ?? '') ?>"
+                                                       placeholder="Enter service description (optional)"
+                                                       data-id="<?= $service['id'] ?>"
+                                                       hx-post="/admin/settings/update-service" 
+                                                       hx-target="#primary-services-container"
+                                                       hx-trigger="blur"
+                                                       hx-include="[data-id='<?= $service['id'] ?>']">
+                                            </div>
+                                        </div>
+                                        <button type="button" 
+                                                class="text-red-500 hover:text-red-700 p-2"
+                                                hx-post="/admin/settings/remove-service" 
+                                                hx-target="#primary-services-container"
+                                                hx-vals='{"id": "<?= $service['id'] ?>"}'>
+                                            <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+                                        </button>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                
+                                <?php if (empty($allPrimaryServices)): ?>
+                                <div id="no-services-message" class="text-center py-4 text-gray-500">
+                                    <p>No primary services added yet.</p>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <!-- Hidden data for JavaScript -->
+                                <script type="application/json" id="services-data">
+                                    <?= json_encode($allPrimaryServices) ?>
+                                </script>
+                            </div>
+                        </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Business Address
+                                Additional Services
                             </label>
-                            <textarea name="business[address]" 
+                            <textarea name="service[additional_services]" 
                                     class="form-textarea" 
-                                    rows="3"
-                                    placeholder="Enter full business address"></textarea>
+                                    rows="4"
+                                    placeholder="List additional services, one per line"><?= htmlspecialchars($settings['service']['additional_services'] ?? '') ?></textarea>
+                            <p class="text-sm text-gray-500 mt-1">Secondary or specialized services you provide</p>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    City
-                                </label>
-                                <input type="text" 
-                                       name="business[city]"
-                                       class="form-input" 
-                                       placeholder="Enter city">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    State
-                                </label>
-                                <input type="text" 
-                                       name="business[state]"
-                                       class="form-input" 
-                                       value="FL">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    ZIP Code
-                                </label>
-                                <input type="text" 
-                                       name="business[zip]"
-                                       class="form-input" 
-                                       placeholder="Enter ZIP code">
-                            </div>
+                <!-- Emergency Services -->
+                <div class="space-y-6 pt-6 border-t">
+                    <h4 class="text-md font-medium text-gray-800">Emergency Services</h4>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" 
+                                       name="service[emergency_available]"
+                                       class="form-checkbox text-yellow-500" 
+                                       value="1"
+                                       <?= !empty($settings['service']['emergency_available']) ? 'checked' : '' ?>>
+                                <span class="ml-2">24/7 Emergency Services Available</span>
+                            </label>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Service Area Radius (miles)
+                                    Emergency Response Time (minutes)
                                 </label>
                                 <input type="number" 
-                                       name="business[service_radius]"
+                                       name="service[emergency_response_time]"
                                        class="form-input" 
-                                       placeholder="Enter service radius">
+                                       value="<?= htmlspecialchars($settings['service']['emergency_response_time'] ?? '60') ?>"
+                                       placeholder="Enter response time">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Counties Served
+                                    Emergency Phone
                                 </label>
-                                <input type="text" 
-                                       name="business[counties]"
+                                <input type="tel" 
+                                       name="service[emergency_phone]"
                                        class="form-input" 
-                                       placeholder="Enter counties served, separated by commas">
+                                       value="<?= htmlspecialchars($settings['service']['emergency_phone'] ?? '') ?>"
+                                       placeholder="Enter emergency contact number">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Service Hours -->
+                <!-- Service Limitations -->
                 <div class="space-y-6 pt-6 border-t">
-                    <h4 class="text-md font-medium text-gray-800">Service Hours</h4>
+                    <h4 class="text-md font-medium text-gray-800">Service Limitations</h4>
                     
-                    <div class="space-y-4">
-                        <!-- Monday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Monday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[monday][open]" class="form-input w-32" value="07:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[monday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[monday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Areas Not Served
                             </label>
+                            <textarea name="service[excluded_areas]" 
+                                    class="form-textarea" 
+                                    rows="3"
+                                    placeholder="List areas or zip codes where services are not available"><?= htmlspecialchars($settings['service']['excluded_areas'] ?? '') ?></textarea>
+                            <p class="text-sm text-gray-500 mt-1">Specify any geographic limitations</p>
                         </div>
                         
-                        <!-- Tuesday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Tuesday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[tuesday][open]" class="form-input w-32" value="07:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[tuesday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[tuesday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Service Restrictions
                             </label>
-                        </div>
-                        
-                        <!-- Wednesday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Wednesday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[wednesday][open]" class="form-input w-32" value="07:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[wednesday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[wednesday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
-                            </label>
-                        </div>
-                        
-                        <!-- Thursday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Thursday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[thursday][open]" class="form-input w-32" value="07:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[thursday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[thursday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
-                            </label>
-                        </div>
-                        
-                        <!-- Friday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Friday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[friday][open]" class="form-input w-32" value="07:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[friday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[friday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
-                            </label>
-                        </div>
-                        
-                        <!-- Saturday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Saturday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[saturday][open]" class="form-input w-32" value="08:00">
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[saturday][close]" class="form-input w-32" value="18:00">
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[saturday][closed]" class="mr-2">
-                                <span class="text-sm text-gray-600">Closed</span>
-                            </label>
-                        </div>
-                        
-                        <!-- Sunday -->
-                        <div class="flex items-center space-x-4">
-                            <div class="w-24">
-                                <label class="block text-sm font-medium text-gray-700">Sunday</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="time" name="hours[sunday][open]" class="form-input w-32" value="09:00" disabled>
-                                <span class="text-gray-500">to</span>
-                                <input type="time" name="hours[sunday][close]" class="form-input w-32" value="17:00" disabled>
-                            </div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="hours[sunday][closed]" class="mr-2" checked>
-                                <span class="text-sm text-gray-600">Closed</span>
-                            </label>
+                            <textarea name="service[restrictions]" 
+                                    class="form-textarea" 
+                                    rows="3"
+                                    placeholder="List any service restrictions or special requirements"><?= htmlspecialchars($settings['service']['restrictions'] ?? '') ?></textarea>
+                            <p class="text-sm text-gray-500 mt-1">Any limitations on services provided</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end pt-6 border-t">
                     <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-medium transition-colors">
-                        Save Business Information
+                        Save Service Area Settings
                     </button>
                 </div>
             </form>
@@ -1550,14 +1879,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form submission handlers (placeholder)
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Settings saved! (This is a demo - actual saving functionality would be implemented here)');
-        });
-    });
+    // Form submission is handled by HTMX - no need for additional JavaScript
     
     // Closed checkbox handlers for service hours
     const closedCheckboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -1570,6 +1892,395 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Image preview function
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        const preview = input.closest('.space-y-3').querySelector('.bg-gray-100');
+        
+        reader.onload = function(e) {
+            // Clear existing content
+            preview.innerHTML = '';
+            
+            // Create new image element
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Preview';
+            img.className = 'max-w-full max-h-full object-contain';
+            
+            preview.appendChild(img);
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Add new location input function
+function addNewLocationInput() {
+    const container = document.getElementById('service-locations-container');
+    const noLocationsMessage = document.getElementById('no-locations-message');
+    
+    // Hide "no locations" message if it exists
+    if (noLocationsMessage) {
+        noLocationsMessage.style.display = 'none';
+    }
+    
+    // Generate a unique temporary ID for the new location
+    const tempId = 'new_' + Date.now();
+    
+    // Create the new location input HTML
+    const newLocationHTML = `
+        <div class="service-location-item flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                    <select class="form-select text-sm location-type" data-id="${tempId}">
+                        <option value="City" selected>City</option>
+                        <option value="State">State</option>
+                        <option value="PostalCode">ZIP Code</option>
+                        <option value="Country">Country</option>
+                    </select>
+                    <input type="hidden" name="new_locations[${tempId}][type]" value="City" class="location-type-hidden" data-id="${tempId}">
+                </div>
+                <div class="md:col-span-2">
+                    <input type="text" 
+                           name="new_locations[${tempId}][name]"
+                           class="form-input text-sm" 
+                           placeholder="Enter location name"
+                           data-id="${tempId}"
+                           required>
+                </div>
+            </div>
+            <button type="button" 
+                    class="text-red-500 hover:text-red-700 p-2"
+                    onclick="removeNewLocationInput(this)">
+                <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add the new location input to the container
+    container.insertAdjacentHTML('beforeend', newLocationHTML);
+    
+    // Add event listener to the new select dropdown
+    const newSelect = container.querySelector(`[data-id="${tempId}"].location-type`);
+    const newHidden = container.querySelector(`[data-id="${tempId}"].location-type-hidden`);
+    
+    newSelect.addEventListener('change', function() {
+        newHidden.value = this.value;
+        newHidden.name = `new_locations[${tempId}][type]`;
+    });
+    
+    // Focus on the new input field
+    const newInput = container.querySelector(`input[data-id="${tempId}"]`);
+    newInput.focus();
+}
+
+// Remove new location input function
+function removeNewLocationInput(button) {
+    const locationItem = button.closest('.service-location-item');
+    locationItem.remove();
+    
+    // Show "no locations" message if no locations remain
+    const container = document.getElementById('service-locations-container');
+    const remainingItems = container.querySelectorAll('.service-location-item');
+    const noLocationsMessage = document.getElementById('no-locations-message');
+    
+    if (remainingItems.length === 0 && noLocationsMessage) {
+        noLocationsMessage.style.display = 'block';
+    }
+}
+
+// Add new service input function
+function addNewServiceInput() {
+    const container = document.getElementById('primary-services-container');
+    const noServicesMessage = document.getElementById('no-services-message');
+    
+    // Hide "no services" message if it exists
+    if (noServicesMessage) {
+        noServicesMessage.style.display = 'none';
+    }
+    
+    // Generate a unique temporary ID for the new service
+    const tempId = 'new_' + Date.now();
+    
+    // Create the new service input HTML
+    const newServiceHTML = `
+        <div class="service-item flex items-center space-x-3 p-3 bg-green-50 rounded-lg border-2 border-green-200">
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <input type="text" 
+                           name="new_services[${tempId}][name]"
+                           class="form-input text-sm" 
+                           placeholder="Enter service name"
+                           data-id="${tempId}"
+                           required>
+                    <input type="hidden" name="new_services[${tempId}][category]" value="primary" data-id="${tempId}">
+                </div>
+                <div>
+                    <input type="text" 
+                           name="new_services[${tempId}][description]"
+                           class="form-input text-sm" 
+                           placeholder="Enter service description (optional)"
+                           data-id="${tempId}">
+                </div>
+            </div>
+            <button type="button" 
+                    class="text-red-500 hover:text-red-700 p-2"
+                    onclick="removeNewServiceInput(this)">
+                <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add the new service input to the container
+    container.insertAdjacentHTML('beforeend', newServiceHTML);
+    
+    // Focus on the new input field
+    const newInput = container.querySelector(`input[name="new_services[${tempId}][name]"]`);
+    newInput.focus();
+}
+
+// Remove new service input function
+function removeNewServiceInput(button) {
+    const serviceItem = button.closest('.service-item');
+    serviceItem.remove();
+    
+    // Show "no services" message if no services remain
+    const container = document.getElementById('primary-services-container');
+    const remainingItems = container.querySelectorAll('.service-item');
+    const noServicesMessage = document.getElementById('no-services-message');
+    
+    if (remainingItems.length === 0 && noServicesMessage) {
+        noServicesMessage.style.display = 'block';
+    }
+}
+
+// Service Locations Pagination
+let currentLocationsPage = 1;
+const locationsPerPage = 10;
+let allLocationsData = [];
+
+// Initialize locations pagination
+document.addEventListener('DOMContentLoaded', function() {
+    const locationsDataElement = document.getElementById('locations-data');
+    if (locationsDataElement) {
+        allLocationsData = JSON.parse(locationsDataElement.textContent);
+        updateLocationsPagination();
+    }
+});
+
+function changeLocationsPage(direction) {
+    const totalPages = Math.ceil(allLocationsData.length / locationsPerPage);
+    const newPage = currentLocationsPage + direction;
+    
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentLocationsPage = newPage;
+        renderLocationsPage();
+        updateLocationsPagination();
+    }
+}
+
+function renderLocationsPage() {
+    const startIndex = (currentLocationsPage - 1) * locationsPerPage;
+    const endIndex = startIndex + locationsPerPage;
+    const pageLocations = allLocationsData.slice(startIndex, endIndex);
+    
+    const locationsList = document.getElementById('locations-list');
+    if (!locationsList) return;
+    
+    locationsList.innerHTML = '';
+    
+    pageLocations.forEach(location => {
+        const locationHTML = `
+            <div class="service-location-item flex items-center space-x-3 p-3 bg-gray-50 rounded-lg" data-location-id="${location.id}">
+                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <select class="form-select text-sm location-type" 
+                                data-id="${location.id}"
+                                hx-post="/admin/settings/update-location" 
+                                hx-target="#service-locations-container"
+                                hx-include="[data-id='${location.id}']">
+                            <option value="City" ${location.type === 'City' ? 'selected' : ''}>City</option>
+                            <option value="State" ${location.type === 'State' ? 'selected' : ''}>State</option>
+                            <option value="PostalCode" ${location.type === 'PostalCode' ? 'selected' : ''}>ZIP Code</option>
+                            <option value="Country" ${location.type === 'Country' ? 'selected' : ''}>Country</option>
+                        </select>
+                        <input type="hidden" name="id" value="${location.id}" data-id="${location.id}">
+                        <input type="hidden" name="type" value="${location.type}" class="location-type-hidden" data-id="${location.id}">
+                    </div>
+                    <div class="md:col-span-2">
+                        <input type="text" 
+                               name="name"
+                               class="form-input text-sm" 
+                               value="${location.name.replace(/"/g, '&quot;')}"
+                               placeholder="Enter location name"
+                               data-id="${location.id}"
+                               hx-post="/admin/settings/update-location" 
+                               hx-target="#service-locations-container"
+                               hx-trigger="blur"
+                               hx-include="[data-id='${location.id}']">
+                    </div>
+                </div>
+                <button type="button" 
+                        class="text-red-500 hover:text-red-700 p-2"
+                        hx-post="/admin/settings/remove-location" 
+                        hx-target="#service-locations-container"
+                        hx-vals='{"id": "${location.id}"}'>
+                    <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+                </button>
+            </div>
+        `;
+        locationsList.insertAdjacentHTML('beforeend', locationHTML);
+    });
+    
+    // Re-initialize HTMX for new elements
+    if (typeof htmx !== 'undefined') {
+        htmx.process(locationsList);
+    }
+}
+
+function updateLocationsPagination() {
+    const totalPages = Math.ceil(allLocationsData.length / locationsPerPage);
+    const startIndex = (currentLocationsPage - 1) * locationsPerPage;
+    const endIndex = Math.min(startIndex + locationsPerPage, allLocationsData.length);
+    
+    // Update pagination info
+    const showingStart = document.getElementById('locations-showing-start');
+    const showingEnd = document.getElementById('locations-showing-end');
+    const total = document.getElementById('locations-total');
+    const currentPageSpan = document.getElementById('locations-current-page');
+    const totalPagesSpan = document.getElementById('locations-total-pages');
+    const prevBtn = document.getElementById('locations-prev-btn');
+    const nextBtn = document.getElementById('locations-next-btn');
+    
+    if (showingStart) showingStart.textContent = startIndex + 1;
+    if (showingEnd) showingEnd.textContent = endIndex;
+    if (total) total.textContent = allLocationsData.length;
+    if (currentPageSpan) currentPageSpan.textContent = currentLocationsPage;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+    
+    // Update button states
+    if (prevBtn) {
+        prevBtn.disabled = currentLocationsPage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentLocationsPage >= totalPages;
+    }
+}
+
+// Primary Services Pagination
+let currentServicesPage = 1;
+const servicesPerPage = 10;
+let allServicesData = [];
+
+// Initialize services pagination
+document.addEventListener('DOMContentLoaded', function() {
+    const servicesDataElement = document.getElementById('services-data');
+    if (servicesDataElement) {
+        allServicesData = JSON.parse(servicesDataElement.textContent);
+        updateServicesPagination();
+    }
+});
+
+function changeServicesPage(direction) {
+    const totalPages = Math.ceil(allServicesData.length / servicesPerPage);
+    const newPage = currentServicesPage + direction;
+    
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentServicesPage = newPage;
+        renderServicesPage();
+        updateServicesPagination();
+    }
+}
+
+function renderServicesPage() {
+    const startIndex = (currentServicesPage - 1) * servicesPerPage;
+    const endIndex = startIndex + servicesPerPage;
+    const pageServices = allServicesData.slice(startIndex, endIndex);
+    
+    const servicesList = document.getElementById('services-list');
+    if (!servicesList) return;
+    
+    servicesList.innerHTML = '';
+    
+    pageServices.forEach(service => {
+        const serviceHTML = `
+            <div class="service-item flex items-center space-x-3 p-3 bg-gray-50 rounded-lg" data-service-id="${service.id}">
+                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <input type="text" 
+                               name="name"
+                               class="form-input text-sm" 
+                               value="${service.name.replace(/"/g, '&quot;')}"
+                               placeholder="Enter service name"
+                               data-id="${service.id}"
+                               hx-post="/admin/settings/update-service" 
+                               hx-target="#primary-services-container"
+                               hx-trigger="blur"
+                               hx-include="[data-id='${service.id}']">
+                        <input type="hidden" name="id" value="${service.id}" data-id="${service.id}">
+                        <input type="hidden" name="category" value="primary" data-id="${service.id}">
+                    </div>
+                    <div>
+                        <input type="text" 
+                               name="description"
+                               class="form-input text-sm" 
+                               value="${(service.description || '').replace(/"/g, '&quot;')}"
+                               placeholder="Enter service description (optional)"
+                               data-id="${service.id}"
+                               hx-post="/admin/settings/update-service" 
+                               hx-target="#primary-services-container"
+                               hx-trigger="blur"
+                               hx-include="[data-id='${service.id}']">
+                    </div>
+                </div>
+                <button type="button" 
+                        class="text-red-500 hover:text-red-700 p-2"
+                        hx-post="/admin/settings/remove-service" 
+                        hx-target="#primary-services-container"
+                        hx-vals='{"id": "${service.id}"}'>
+                    <i class="icon-[heroicons--trash-20-solid] text-lg"></i>
+                </button>
+            </div>
+        `;
+        servicesList.insertAdjacentHTML('beforeend', serviceHTML);
+    });
+    
+    // Re-initialize HTMX for new elements
+    if (typeof htmx !== 'undefined') {
+        htmx.process(servicesList);
+    }
+}
+
+function updateServicesPagination() {
+    const totalPages = Math.ceil(allServicesData.length / servicesPerPage);
+    const startIndex = (currentServicesPage - 1) * servicesPerPage;
+    const endIndex = Math.min(startIndex + servicesPerPage, allServicesData.length);
+    
+    // Update pagination info
+    const showingStart = document.getElementById('services-showing-start');
+    const showingEnd = document.getElementById('services-showing-end');
+    const total = document.getElementById('services-total');
+    const currentPageSpan = document.getElementById('services-current-page');
+    const totalPagesSpan = document.getElementById('services-total-pages');
+    const prevBtn = document.getElementById('services-prev-btn');
+    const nextBtn = document.getElementById('services-next-btn');
+    
+    if (showingStart) showingStart.textContent = startIndex + 1;
+    if (showingEnd) showingEnd.textContent = endIndex;
+    if (total) total.textContent = allServicesData.length;
+    if (currentPageSpan) currentPageSpan.textContent = currentServicesPage;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+    
+    // Update button states
+    if (prevBtn) {
+        prevBtn.disabled = currentServicesPage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentServicesPage >= totalPages;
+    }
+}
 </script>
 
 <style>

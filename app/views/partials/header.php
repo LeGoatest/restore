@@ -42,7 +42,7 @@
             <!-- CTA Button / User Menu - Hidden on mobile -->
             <?php if (Auth::isAuthenticated()): ?>
                 <div class="btn-cta hidden md:flex">
-                    <span class="text-white mr-4">Welcome, <?= htmlspecialchars(Auth::getUsername()) ?></span>
+                    <a href="/admin" class="text-white mr-4">Dashboard</a>
                     <a href="/logout" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-semibold transition-colors">
                         Logout
                     </a>

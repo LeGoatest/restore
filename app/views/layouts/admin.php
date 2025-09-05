@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Admin Dashboard - Restore Removal') ?></title>
-    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Admin Dashboard for Restore Removal') ?>">
+    <title><?= htmlspecialchars($title ?? 'Admin Dashboard') ?></title>
+    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Admin Dashboard') ?>">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
@@ -18,7 +18,7 @@
     <!-- Chart.js -->
     <script src="/static/js/chart.min.js"></script>
 </head>
-<body class="">
+<body class="text-black/50">
     <!-- Admin Sidebar -->
     <?php include __DIR__ . '/../admin/partials/sidebar.php'; ?>
     
@@ -29,7 +29,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900"><?= htmlspecialchars($page_title ?? 'Admin Dashboard') ?></h1>
-                    <p class="text-gray-600 mt-1">Manage your Restore Removal business</p>
+                    <p class="text-gray-600 mt-1">Manage your Restore business</p>
                 </div>
                 
                 <!-- Mobile Menu Button -->

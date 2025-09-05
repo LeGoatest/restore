@@ -10,8 +10,8 @@ use App\Core\Database;
 class Quote extends Model
 {
     protected static string $table = 'quotes';
-    protected static array $fillable = ['name', 'email', 'phone', 'description', 'status'];
-    protected static array $allowHtml = ['description'];
+    protected static array $fillable = ['name', 'email', 'phone', 'address', 'service_type', 'description', 'preferred_date', 'preferred_time', 'estimated_amount', 'status', 'notes'];
+    protected static array $allowHtml = ['description', 'notes'];
     
     public static function getByStatus(string $status): array
     {

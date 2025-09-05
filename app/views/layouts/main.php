@@ -26,38 +26,8 @@ use App\Core\Security;
     
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "MyRestorePro",
-        "description": "Professional Restoration services in Central Florida",
-        "telephone": "(727) 692-8167",
-        "email": "info@myrestorepro.com",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Ocala",
-            "addressRegion": "FL",
-            "addressCountry": "US"
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 28.994402,
-            "longitude": -82.442515
-        },
-        "openingHours": [
-            "Mo-Sa 07:00-18:00",
-            "Su Closed"
-        ],
-        "serviceArea": {
-            "@type": "GeoCircle",
-            "geoMidpoint": {
-                "@type": "GeoCoordinates",
-                "latitude": 28.994402,
-                "longitude": -82.442515
-            },
-            "geoRadius": "50000"
-        }
-    }
+    <?= \App\Models\Setting::getLocalBusinessSchemaJson() ?>
+    </script>
     </script>
 </head>
 <body>

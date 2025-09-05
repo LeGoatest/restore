@@ -10,7 +10,7 @@ use App\Core\Database;
 class Contact extends Model
 {
     protected static string $table = 'contacts';
-    protected static array $fillable = ['name', 'email', 'phone', 'message', 'status'];
+    protected static array $fillable = ['name', 'email', 'phone', 'service_type', 'message', 'status'];
     protected static array $allowHtml = ['message'];
     
     public static function getByStatus(string $status): array

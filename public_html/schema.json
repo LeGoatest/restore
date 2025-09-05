@@ -1,8 +1,147 @@
 {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-    }
-  ]
-
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "MyRestorePro",
+    "serviceLocation": [
+        {
+            "@type": "City",
+            "name": "Belleview"
+        },
+        {
+            "@type": "City",
+            "name": "Beverly Hills"
+        },
+        {
+            "@type": "City",
+            "name": "Black Diamond"
+        },
+        {
+            "@type": "City",
+            "name": "Brooksville"
+        },
+        {
+            "@type": "City",
+            "name": "Citrus Hills"
+        },
+        {
+            "@type": "City",
+            "name": "Citrus Springs"
+        },
+        {
+            "@type": "City",
+            "name": "Clermont"
+        },
+        {
+            "@type": "City",
+            "name": "Crystal River"
+        },
+        {
+            "@type": "City",
+            "name": "Dade City"
+        },
+        {
+            "@type": "City",
+            "name": "Floral City"
+        },
+        {
+            "@type": "City",
+            "name": "Fruitland Park"
+        },
+        {
+            "@type": "City",
+            "name": "Groveland"
+        },
+        {
+            "@type": "City",
+            "name": "Hernando Beach"
+        },
+        {
+            "@type": "City",
+            "name": "Homosassa"
+        },
+        {
+            "@type": "City",
+            "name": "Homosassa Springs"
+        },
+        {
+            "@type": "City",
+            "name": "Hudson"
+        },
+        {
+            "@type": "City",
+            "name": "Inverness"
+        },
+        {
+            "@type": "City",
+            "name": "Lady Lake"
+        },
+        {
+            "@type": "City",
+            "name": "Lake Panasoffkee"
+        },
+        {
+            "@type": "City",
+            "name": "Lecanto"
+        },
+        {
+            "@type": "City",
+            "name": "Leesburg"
+        },
+        {
+            "@type": "City",
+            "name": "New Port Richey"
+        },
+        {
+            "@type": "City",
+            "name": "Ocala"
+        },
+        {
+            "@type": "City",
+            "name": "Ocklawaha"
+        },
+        {
+            "@type": "City",
+            "name": "On Top of the World"
+        },
+        {
+            "@type": "City",
+            "name": "Oxford"
+        },
+        {
+            "@type": "City",
+            "name": "Pine Ridge"
+        },
+        {
+            "@type": "City",
+            "name": "Silver Springs"
+        },
+        {
+            "@type": "City",
+            "name": "Spring Hill"
+        },
+        {
+            "@type": "City",
+            "name": "Sugarmill Woods"
+        },
+        {
+            "@type": "City",
+            "name": "Sumterville"
+        },
+        {
+            "@type": "City",
+            "name": "Tavares"
+        },
+        {
+            "@type": "City",
+            "name": "The Villages"
+        },
+        {
+            "@type": "City",
+            "name": "Weeki Wachee"
+        },
+        {
+            "@type": "City",
+            "name": "Wildwood"
+        }
+    ]
 }

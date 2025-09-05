@@ -21,6 +21,13 @@ abstract class Controller
         return $this->render($view, $data);
     }
 
+    protected function partial(string $view, array $data = []): string
+    {
+        // Render view without layout for HTMX partials
+        $sanitizedData = Security::sanitizeArray($data);
+        return $this->view->render($view, $sanitizedData);
+    }
+
     public function __construct()
     {
         Security::init();

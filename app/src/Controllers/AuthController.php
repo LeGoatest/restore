@@ -17,7 +17,7 @@ class AuthController extends Controller
         Auth::redirectIfAuthenticated();
 
         $data = [
-            'title' => 'Admin Login - Restore Removal',
+            'title' => 'Admin Login',
             'error' => $_SESSION['login_error'] ?? null,
             'success' => $_SESSION['login_success'] ?? null
         ];
