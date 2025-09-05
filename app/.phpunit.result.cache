@@ -1,1 +1,1 @@
-{"version":2,"defects":[],"times":{"Tests\\RouterTest::testGetRoute":0.001,"Tests\\RouterTest::testPostRoute":0,"Tests\\RouterTest::testDeleteRoute":0,"Tests\\RouterTest::testRouteNotFound":0}}
+{"version":2,"defects":[],"times":{"Tests\\RouterTest::testGetRoute":0.001,"Tests\\RouterTest::testPostRoute":0,"Tests\\RouterTest::testDeleteRoute":0.001,"Tests\\RouterTest::testRouteNotFound":0.001}}
