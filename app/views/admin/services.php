@@ -16,31 +16,29 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Description</th>
-                        <th>Base Price</th>
-                        <th>Active</th>
+                        <th>Icon</th>
+                        <th>Featured</th>
                         <th>Sort Order</th>
-                        <th>Created</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($services as $service): ?>
                     <tr>
-                        <td class="font-mono text-sm"><?= $service['id'] ?></td>
-                        <td class="font-medium"><?= htmlspecialchars($service['name']) ?></td>
+                        <td class="font-mono text-sm"><?= $service->id ?></td>
+                        <td class="font-medium"><?= htmlspecialchars($service->name) ?></td>
                         <td>
-                            <span class="category category-<?= $service['category'] ?>">
-                                <?= ucwords(str_replace('-', ' ', $service['category'])) ?>
+                            <span class="category category-<?= $service->category ?>">
+                                <?= ucwords(str_replace('-', ' ', $service->category)) ?>
                             </span>
                         </td>
-                        <td class="description-preview" title="<?= htmlspecialchars($service['description']) ?>">
-                            <?= htmlspecialchars(substr($service['description'], 0, 50)) ?><?= strlen($service['description']) > 50 ? '...' : '' ?>
+                        <td class="description-preview" title="<?= htmlspecialchars($service->description) ?>">
+                            <?= htmlspecialchars(substr($service->description, 0, 50)) ?><?= strlen($service->description) > 50 ? '...' : '' ?>
                         </td>
-                        <td class="price"><?= $service['base_price'] ? '$' . number_format($service['base_price'], 2) : 'N/A' ?></td>
-                        <td class="active-<?= $service['is_active'] ? 'yes' : 'no' ?>">
-                            <?= $service['is_active'] ? 'Yes' : 'No' ?>
+                        <td><?= htmlspecialchars($service->icon) ?></td>
+                        <td class="active-<?= $service->is_featured ? 'yes' : 'no' ?>">
+                            <?= $service->is_featured ? 'Yes' : 'No' ?>
                         </td>
-                        <td class="text-center"><?= $service['sort_order'] ?></td>
-                        <td class="text-sm text-gray-600"><?= date('M j, Y', strtotime($service['created_at'])) ?></td>
+                        <td class="text-center"><?= $service->sort_order ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

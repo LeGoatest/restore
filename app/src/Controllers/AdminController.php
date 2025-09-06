@@ -186,7 +186,6 @@ class AdminController extends Controller
         $status = $_GET['status'] ?? 'all';
         $page = (int)($_GET['page'] ?? 1);
         $perPage = 10;
-        $offset = ($page - 1) * $perPage;
 
         // Get contacts based on status
         if ($status === 'all') {
@@ -198,6 +197,7 @@ class AdminController extends Controller
         // Apply pagination
         $totalContacts = count($contacts);
         $totalPages = ceil($totalContacts / $perPage);
+        $offset = ($page - 1) * $perPage;
         $paginatedContacts = array_slice($contacts, $offset, $perPage);
 
         // Get status counts
@@ -208,9 +208,17 @@ class AdminController extends Controller
             'replied' => count(Contact::getByStatus('replied'))
         ];
 
-        ob_start();
-        include 'app/views/admin/contacts.php';
-        return ob_get_clean();
+        $data = [
+            'status' => $status,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalContacts' => $totalContacts,
+            'totalPages' => $totalPages,
+            'paginatedContacts' => $paginatedContacts,
+            'statusCounts' => $statusCounts,
+        ];
+
+        return $this->view->render('admin/contacts', $data);
     }
 
     /**

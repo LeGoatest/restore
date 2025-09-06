@@ -7,6 +7,16 @@ use App\Core\Database;
 class Setting extends Model {
     protected static string $table = 'settings';
     protected static array $fillable = ['category', 'name', 'value'];
+
+    public static function getAllSettings(): array
+    {
+        $allData = Database::fetchAll("SELECT * FROM " . self::$table);
+        $settings = [];
+        foreach ($allData as $row) {
+            $settings[$row['category']][$row['name']] = $row['value'];
+        }
+        return $settings;
+    }
     
     /**
      * Get all settings by category

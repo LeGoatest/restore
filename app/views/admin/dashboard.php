@@ -193,10 +193,10 @@
                     <tbody>
                         <?php foreach ($recent_contacts as $contact): ?>
                         <tr>
-                            <td class="font-medium"><?= htmlspecialchars($contact['name']) ?></td>
-                            <td><a href="mailto:<?= htmlspecialchars($contact['email']) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($contact['email']) ?></a></td>
-                            <td><span class="status-<?= $contact['status'] ?>"><?= ucfirst($contact['status']) ?></span></td>
-                            <td class="text-sm text-gray-600"><?= date('M j, g:i A', strtotime($contact['created_at'])) ?></td>
+                            <td class="font-medium"><?= htmlspecialchars($contact->name) ?></td>
+                            <td><a href="mailto:<?= htmlspecialchars($contact->email) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($contact->email) ?></a></td>
+                            <td><span class="status-<?= $contact->status ?>"><?= ucfirst($contact->status) ?></span></td>
+                            <td class="text-sm text-gray-600"><?= date('M j, g:i A', strtotime($contact->created_at)) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
