@@ -41,6 +41,30 @@ class Contact extends Model
     public static function all(?int $userId = null): array
     {
         $sql = "SELECT * FROM " . self::$table;
+    }
+
+    public static function getPaginated(string $status, int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+
+        $where = '';
+        $params = [];
+        if ($status !== 'all') {
+            $where = ' WHERE status = ?';
+            $params[] = $status;
+        }
+
+        $total = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table . $where, $params)['count'];
+
+        $data = Database::fetchAll(
+            "SELECT * FROM " . self::$table . $where . " ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            array_merge($params, [$perPage, $offset])
+        );
+
+        return [
+            'items' => array_map(fn($d) => new ContactDTO($d), $data),
+            'total' => $total,
+        ];
         $params = [];
         
         // Add user_id filter if provided and column exists

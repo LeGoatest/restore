@@ -6,32 +6,65 @@ namespace App\Models;
 
 use App\Core\Model;
 use App\Core\Database;
+use App\DTOs\QuoteDTO;
 
 class Quote extends Model
 {
     protected static string $table = 'quotes';
     protected static array $fillable = ['name', 'email', 'phone', 'address', 'service_type', 'description', 'preferred_date', 'preferred_time', 'estimated_amount', 'status', 'notes'];
     protected static array $allowHtml = ['description', 'notes'];
+
+    public static function find(int $id): ?QuoteDTO
+    {
+        $data = Database::fetchOne("SELECT * FROM " . static::$table . " WHERE id = ?", [$id]);
+        return $data ? new QuoteDTO($data) : null;
+    }
     
     public static function getByStatus(string $status): array
     {
-        return Database::fetchAll(
+        $allData = Database::fetchAll(
             "SELECT * FROM " . self::$table . " WHERE status = ? ORDER BY created_at DESC",
             [$status]
         );
+        return array_map(fn($data) => new QuoteDTO($data), $allData);
     }
     
     public static function getRecent(int $limit = 10): array
     {
-        return Database::fetchAll(
+        $allData = Database::fetchAll(
             "SELECT * FROM " . self::$table . " ORDER BY created_at DESC LIMIT ?",
             [$limit]
         );
+        return array_map(fn($data) => new QuoteDTO($data), $allData);
     }
     
     public static function all(?int $userId = null): array
     {
         $sql = "SELECT * FROM " . self::$table;
+    }
+
+    public static function getPaginated(string $status, int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+
+        $where = '';
+        $params = [];
+        if ($status !== 'all') {
+            $where = ' WHERE status = ?';
+            $params[] = $status;
+        }
+
+        $total = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table . $where, $params)['count'];
+
+        $data = Database::fetchAll(
+            "SELECT * FROM " . self::$table . $where . " ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            array_merge($params, [$perPage, $offset])
+        );
+
+        return [
+            'items' => array_map(fn($d) => new QuoteDTO($d), $data),
+            'total' => $total,
+        ];
         $params = [];
         
         // Add user_id filter if provided and column exists
@@ -42,7 +75,8 @@ class Quote extends Model
         
         $sql .= " ORDER BY created_at DESC";
         
-        return Database::fetchAll($sql, $params);
+        $allData = Database::fetchAll($sql, $params);
+        return array_map(fn($data) => new QuoteDTO($data), $allData);
     }
     
     public static function count(?int $userId = null): int

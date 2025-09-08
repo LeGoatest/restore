@@ -45,6 +45,23 @@ class AdminController extends Controller
         return $this->render('admin/dashboard', $data, 'admin');
     }
 
+    public function hub(): string
+    {
+        Auth::requireAuth('admin');
+
+        $data = [
+            'title' => 'Admin Hub',
+            'page_title' => 'Admin Hub',
+            'current_page' => 'hub',
+            'username' => Auth::getUsername(),
+            'new_contacts_count' => count(Contact::getByStatus('new')),
+            'pending_quotes_count' => count(Quote::getByStatus('pending')),
+            'total_users_count' => User::count(),
+        ];
+
+        return $this->render('admin/hub', $data, 'admin');
+    }
+
     public function contacts(): string
     {
         Auth::requireAuth();
@@ -187,18 +204,7 @@ class AdminController extends Controller
         $page = (int)($_GET['page'] ?? 1);
         $perPage = 10;
 
-        // Get contacts based on status
-        if ($status === 'all') {
-            $contacts = Contact::all();
-        } else {
-            $contacts = Contact::getByStatus($status);
-        }
-
-        // Apply pagination
-        $totalContacts = count($contacts);
-        $totalPages = ceil($totalContacts / $perPage);
-        $offset = ($page - 1) * $perPage;
-        $paginatedContacts = array_slice($contacts, $offset, $perPage);
+        $paginationData = Contact::getPaginated($status, $page, $perPage);
 
         // Get status counts
         $statusCounts = [
@@ -212,13 +218,13 @@ class AdminController extends Controller
             'status' => $status,
             'page' => $page,
             'perPage' => $perPage,
-            'totalContacts' => $totalContacts,
-            'totalPages' => $totalPages,
-            'paginatedContacts' => $paginatedContacts,
+            'totalContacts' => $paginationData['total'],
+            'totalPages' => ceil($paginationData['total'] / $perPage),
+            'paginatedContacts' => $paginationData['items'],
             'statusCounts' => $statusCounts,
         ];
 
-        return $this->view->render('admin/contacts', $data);
+        return $this->render('admin/contacts', $data);
     }
 
     /**
@@ -230,19 +236,8 @@ class AdminController extends Controller
         $status = $_GET['status'] ?? 'all';
         $page = (int)($_GET['page'] ?? 1);
         $perPage = 10;
-        $offset = ($page - 1) * $perPage;
 
-        // Get quotes based on status
-        if ($status === 'all') {
-            $quotes = Quote::all();
-        } else {
-            $quotes = Quote::getByStatus($status);
-        }
-
-        // Apply pagination
-        $totalQuotes = count($quotes);
-        $totalPages = ceil($totalQuotes / $perPage);
-        $paginatedQuotes = array_slice($quotes, $offset, $perPage);
+        $paginationData = Quote::getPaginated($status, $page, $perPage);
 
         // Get status counts
         $statusCounts = [
@@ -253,9 +248,17 @@ class AdminController extends Controller
             'completed' => count(Quote::getByStatus('completed'))
         ];
 
-        ob_start();
-        include 'app/views/admin/quotes.php';
-        return ob_get_clean();
+        $data = [
+            'status' => $status,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalQuotes' => $paginationData['total'],
+            'totalPages' => ceil($paginationData['total'] / $perPage),
+            'paginatedQuotes' => $paginationData['items'],
+            'statusCounts' => $statusCounts,
+        ];
+
+        return $this->render('admin/quotes', $data);
     }
 
     public function services(): string
