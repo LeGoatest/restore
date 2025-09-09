@@ -58,10 +58,10 @@ $router->post('/admin/settings/remove-location', AdminController::class, 'remove
 $router->post('/admin/settings/update-location', AdminController::class, 'updateLocation');
 $router->post('/admin/settings/load-sample-locations', AdminController::class, 'loadSampleLocations');
 
-// Hub routes
-$router->get('/clienthub', \App\Controllers\ClientController::class, 'hub');
-$router->get('/staffhub', \App\Controllers\StaffController::class, 'hub');
-$router->get('/adminhub', AdminController::class, 'hub');
+// Role-based dashboard routes
+$router->get('/client', \App\Controllers\ClientController::class, 'index');
+$router->get('/staff', \App\Controllers\StaffController::class, 'index');
+$router->get('/admin', AdminController::class, 'dashboard');
 
 // Tracking route (using GET to avoid POST restrictions)
 $router->get('/analytics/track', ApiController::class, 'track');

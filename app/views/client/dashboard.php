@@ -1,6 +1,6 @@
 <div class="p-6">
-    <h1 class="text-2xl font-bold">Client Hub</h1>
-    <p>Welcome to your client hub. From here you can manage your quotes and contact requests.</p>
+    <h1 class="text-2xl font-bold">Client Dashboard</h1>
+    <p>Welcome to your client dashboard. From here you can manage your quotes and contact requests.</p>
 
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-lg shadow">

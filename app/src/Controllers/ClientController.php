@@ -9,16 +9,16 @@ use App\Core\Auth;
 
 class ClientController extends Controller
 {
-    public function hub(): string
+    public function index(): string
     {
         Auth::requireAuth('client');
 
         $data = [
-            'title' => 'Client Hub',
-            'page_title' => 'Client Hub',
+            'title' => 'Client Dashboard',
+            'page_title' => 'Client Dashboard',
             'username' => Auth::getUsername(),
         ];
 
-        return $this->render('client/hub', $data, 'client');
+        return $this->render('client/dashboard', $data, 'client');
     }
 }

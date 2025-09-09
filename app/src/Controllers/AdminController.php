@@ -45,22 +45,6 @@ class AdminController extends Controller
         return $this->render('admin/dashboard', $data, 'admin');
     }
 
-    public function hub(): string
-    {
-        Auth::requireAuth('admin');
-
-        $data = [
-            'title' => 'Admin Hub',
-            'page_title' => 'Admin Hub',
-            'current_page' => 'hub',
-            'username' => Auth::getUsername(),
-            'new_contacts_count' => count(Contact::getByStatus('new')),
-            'pending_quotes_count' => count(Quote::getByStatus('pending')),
-            'total_users_count' => User::count(),
-        ];
-
-        return $this->render('admin/hub', $data, 'admin');
-    }
 
     public function contacts(): string
     {

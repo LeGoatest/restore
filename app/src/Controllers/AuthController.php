@@ -107,13 +107,13 @@ class AuthController extends Controller
                 $role = Auth::getUserRole();
                 switch ($role) {
                     case 'admin':
-                        $this->redirect('/adminhub');
+                        $this->redirect('/admin');
                         break;
                     case 'staff':
-                        $this->redirect('/staffhub');
+                        $this->redirect('/staff');
                         break;
                     case 'client':
-                        $this->redirect('/clienthub');
+                        $this->redirect('/client');
                         break;
                     default:
                         $this->redirect('/');

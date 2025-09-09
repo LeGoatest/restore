@@ -9,16 +9,16 @@ use App\Core\Auth;
 
 class StaffController extends Controller
 {
-    public function hub(): string
+    public function index(): string
     {
         Auth::requireAuth('staff');
 
         $data = [
-            'title' => 'Staff Hub',
-            'page_title' => 'Staff Hub',
+            'title' => 'Staff Dashboard',
+            'page_title' => 'Staff Dashboard',
             'username' => Auth::getUsername(),
         ];
 
-        return $this->render('staff/hub', $data, 'staff');
+        return $this->render('staff/dashboard', $data, 'staff');
     }
 }

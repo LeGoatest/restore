@@ -1,6 +1,6 @@
 <div class="p-6">
-    <h1 class="text-2xl font-bold">Staff Hub</h1>
-    <p>Welcome to the staff hub. From here you can manage assigned tasks and view schedules.</p>
+    <h1 class="text-2xl font-bold">Staff Dashboard</h1>
+    <p>Welcome to the staff dashboard. From here you can manage assigned tasks and view schedules.</p>
 
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-lg shadow">
