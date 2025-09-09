@@ -1,5 +1,32 @@
 <?php
 use App\Core\Security;
+use App\Models\Contact;
+
+// Get filter parameters
+$status = $_GET['status'] ?? 'all';
+$page = (int)($_GET['page'] ?? 1);
+$perPage = 10;
+$offset = ($page - 1) * $perPage;
+
+// Get contacts based on status
+if ($status === 'all') {
+    $contacts = Contact::all();
+} else {
+    $contacts = Contact::getByStatus($status);
+}
+
+// Apply pagination
+$totalContacts = count($contacts);
+$totalPages = ceil($totalContacts / $perPage);
+$paginatedContacts = array_slice($contacts, $offset, $perPage);
+
+// Get status counts
+$statusCounts = [
+    'all' => Contact::count(),
+    'new' => count(Contact::getByStatus('new')),
+    'read' => count(Contact::getByStatus('read')),
+    'replied' => count(Contact::getByStatus('replied'))
+];
 ?>
 
 <!-- Contacts Management Page -->
@@ -60,66 +87,66 @@ use App\Core\Security;
                 <!-- Contacts List -->
                 <div class="space-y-4">
                     <?php foreach ($paginatedContacts as $contact): ?>
-                        <div class="contact-item bg-gray-50 rounded-lg p-4 border-l-4 <?= $contact->status === 'new' ? 'border-blue-500' : ($contact->status === 'read' ? 'border-yellow-500' : 'border-green-500') ?>">
+                        <div class="contact-item bg-gray-50 rounded-lg p-4 border-l-4 <?= $contact['status'] === 'new' ? 'border-blue-500' : ($contact['status'] === 'read' ? 'border-yellow-500' : 'border-green-500') ?>">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center space-x-3 mb-2">
-                                        <h3 class="font-medium text-gray-900"><?= htmlspecialchars($contact->name) ?></h3>
-                                        <span class="px-2 py-1 text-xs rounded-full <?= $contact->status === 'new' ? 'bg-blue-100 text-blue-800' : ($contact->status === 'read' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') ?>">
-                                            <?= ucfirst($contact->status) ?>
+                                        <h3 class="font-medium text-gray-900"><?= htmlspecialchars($contact['name']) ?></h3>
+                                        <span class="px-2 py-1 text-xs rounded-full <?= $contact['status'] === 'new' ? 'bg-blue-100 text-blue-800' : ($contact['status'] === 'read' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') ?>">
+                                            <?= ucfirst($contact['status']) ?>
                                         </span>
                                         <span class="text-sm text-gray-500">
-                                            <?= date('M j, Y g:i A', strtotime($contact->created_at)) ?>
+                                            <?= date('M j, Y g:i A', strtotime($contact['created_at'])) ?>
                                         </span>
                                     </div>
                                     
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">Email:</span>
-                                            <a href="mailto:<?= htmlspecialchars($contact->email) ?>" class="text-blue-600 hover:text-blue-800 ml-1">
-                                                <?= htmlspecialchars($contact->email) ?>
+                                            <a href="mailto:<?= htmlspecialchars($contact['email']) ?>" class="text-blue-600 hover:text-blue-800 ml-1">
+                                                <?= htmlspecialchars($contact['email']) ?>
                                             </a>
                                         </div>
-                                        <?php if ($contact->phone): ?>
+                                        <?php if ($contact['phone']): ?>
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">Phone:</span>
-                                            <a href="tel:<?= htmlspecialchars($contact->phone) ?>" class="text-blue-600 hover:text-blue-800 ml-1">
-                                                <?= htmlspecialchars($contact->phone) ?>
+                                            <a href="tel:<?= htmlspecialchars($contact['phone']) ?>" class="text-blue-600 hover:text-blue-800 ml-1">
+                                                <?= htmlspecialchars($contact['phone']) ?>
                                             </a>
                                         </div>
                                         <?php endif; ?>
-                                        <?php if ($contact->service_type): ?>
+                                        <?php if ($contact['service_type']): ?>
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">Service:</span>
-                                            <span class="ml-1"><?= htmlspecialchars($contact->service_type) ?></span>
+                                            <span class="ml-1"><?= htmlspecialchars($contact['service_type']) ?></span>
                                         </div>
                                         <?php endif; ?>
                                     </div>
                                     
-                                    <?php if ($contact->message): ?>
+                                    <?php if ($contact['message']): ?>
                                     <div class="bg-white p-3 rounded border">
                                         <span class="text-sm font-medium text-gray-700">Message:</span>
-                                        <p class="mt-1 text-gray-900"><?= nl2br(htmlspecialchars($contact->message)) ?></p>
+                                        <p class="mt-1 text-gray-900"><?= nl2br(htmlspecialchars($contact['message'])) ?></p>
                                     </div>
                                     <?php endif; ?>
                                 </div>
                                 
                                 <!-- Actions -->
                                 <div class="flex items-center space-x-2 ml-4">
-                                    <?php if ($contact->status === 'new'): ?>
+                                    <?php if ($contact['status'] === 'new'): ?>
                                         <button class="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
                                                 hx-post="/admin/contacts/update-status"
-                                                hx-vals='{"id": "<?= $contact->id ?>", "status": "read"}'
+                                                hx-vals='{"id": "<?= $contact['id'] ?>", "status": "read"}'
                                                 hx-target="#contacts-content"
                                                 hx-swap="outerHTML">
                                             Mark Read
                                         </button>
                                     <?php endif; ?>
                                     
-                                    <?php if ($contact->status !== 'replied'): ?>
+                                    <?php if ($contact['status'] !== 'replied'): ?>
                                         <button class="px-3 py-1 text-sm bg-green-500 hover:bg-green-600 text-white rounded transition-colors"
                                                 hx-post="/admin/contacts/update-status"
-                                                hx-vals='{"id": "<?= $contact->id ?>", "status": "replied"}'
+                                                hx-vals='{"id": "<?= $contact['id'] ?>", "status": "replied"}'
                                                 hx-target="#contacts-content"
                                                 hx-swap="outerHTML">
                                             Mark Replied
@@ -128,7 +155,7 @@ use App\Core\Security;
                                     
                                     <button class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition-colors"
                                             hx-delete="/admin/contacts/delete"
-                                            hx-vals='{"id": "<?= $contact->id ?>"}'
+                                            hx-vals='{"id": "<?= $contact['id'] ?>"}'
                                             hx-target="#contacts-content"
                                             hx-swap="outerHTML"
                                             hx-confirm="Are you sure you want to delete this contact?">
@@ -144,7 +171,7 @@ use App\Core\Security;
                 <?php if ($totalPages > 1): ?>
                 <div class="flex items-center justify-between mt-6 pt-6 border-t">
                     <div class="text-sm text-gray-600">
-                        Showing <?= ($page - 1) * $perPage + 1 ?>-<?= min($page * $perPage, $totalContacts) ?> of <?= $totalContacts ?> contacts
+                        Showing <?= $offset + 1 ?>-<?= min($offset + $perPage, $totalContacts) ?> of <?= $totalContacts ?> contacts
                     </div>
                     <div class="flex items-center space-x-2">
                         <?php if ($page > 1): ?>

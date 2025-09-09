@@ -18,11 +18,6 @@ class Router
         $this->routes['POST'][$path] = ['controller' => $controller, 'method' => $method];
     }
 
-    public function delete(string $path, string $controller, string $method): void
-    {
-        $this->routes['DELETE'][$path] = ['controller' => $controller, 'method' => $method];
-    }
-
     public function resolve(string $method, string $path): array
     {
         // First try exact match

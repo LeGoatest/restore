@@ -16,7 +16,7 @@ class Contact extends Model
 
     public static function find(int $id): ?ContactDTO
     {
-        $data = Database::fetchOne("SELECT * FROM " . static::$table . " WHERE id = ?", [$id]);
+        $data = parent::find($id);
         return $data ? new ContactDTO($data) : null;
     }
     
@@ -40,42 +40,7 @@ class Contact extends Model
     
     public static function all(?int $userId = null): array
     {
-        $sql = "SELECT * FROM " . self::$table;
-    }
-
-    public static function getPaginated(string $status, int $page, int $perPage): array
-    {
-        $offset = ($page - 1) * $perPage;
-
-        $where = '';
-        $params = [];
-        if ($status !== 'all') {
-            $where = ' WHERE status = ?';
-            $params[] = $status;
-        }
-
-        $total = Database::fetchOne("SELECT COUNT(*) as count FROM " . self::$table . $where, $params)['count'];
-
-        $data = Database::fetchAll(
-            "SELECT * FROM " . self::$table . $where . " ORDER BY created_at DESC LIMIT ? OFFSET ?",
-            array_merge($params, [$perPage, $offset])
-        );
-
-        return [
-            'items' => array_map(fn($d) => new ContactDTO($d), $data),
-            'total' => $total,
-        ];
-        $params = [];
-        
-        // Add user_id filter if provided and column exists
-        if ($userId !== null && static::hasColumn('user_id')) {
-            $sql .= " WHERE user_id = :user_id";
-            $params['user_id'] = $userId;
-        }
-        
-        $sql .= " ORDER BY created_at DESC";
-        
-        $allData = Database::fetchAll($sql, $params);
+        $allData = parent::all($userId);
         return array_map(fn($data) => new ContactDTO($data), $allData);
     }
     

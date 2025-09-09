@@ -104,21 +104,7 @@ class AuthController extends Controller
     {
         try {
             if (Auth::loginWithMagicLink($token)) {
-                $role = Auth::getUserRole();
-                switch ($role) {
-                    case 'admin':
-                        $this->redirect('/admin');
-                        break;
-                    case 'staff':
-                        $this->redirect('/staff');
-                        break;
-                    case 'client':
-                        $this->redirect('/client');
-                        break;
-                    default:
-                        $this->redirect('/');
-                        break;
-                }
+                $this->redirect('/admin');
             } else {
                 $_SESSION['login_error'] = 'This login link has expired or is invalid. Please request a new one.';
                 $this->redirect('/login');

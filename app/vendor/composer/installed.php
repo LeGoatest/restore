@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'my-restore-pro/website',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'fc4f2d1331781901bdd0b3f6f77869513c5ba9bf',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'reference' => null,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -389,9 +389,9 @@
             'dev_requirement' => false,
         ),
         'my-restore-pro/website' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'fc4f2d1331781901bdd0b3f6f77869513c5ba9bf',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'reference' => null,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -16,7 +16,7 @@ class Service extends Model
 
     public static function find(int $id): ?ServiceDTO
     {
-        $data = Database::fetchOne("SELECT * FROM " . static::$table . " WHERE id = ?", [$id]);
+        $data = parent::find($id);
         return $data ? new ServiceDTO($data) : null;
     }
 
@@ -47,18 +47,7 @@ class Service extends Model
     
     public static function all(?int $userId = null): array
     {
-        $sql = "SELECT * FROM " . self::$table;
-        $params = [];
-        
-        // Add user_id filter if provided and column exists
-        if ($userId !== null && static::hasColumn('user_id')) {
-            $sql .= " WHERE user_id = :user_id";
-            $params['user_id'] = $userId;
-        }
-        
-        $sql .= " ORDER BY category, sort_order, name";
-        
-        $allData = Database::fetchAll($sql, $params);
+        $allData = parent::all($userId);
         return array_map(fn($data) => new ServiceDTO($data), $allData);
     }
     
