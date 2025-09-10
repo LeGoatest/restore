@@ -1,39 +1,60 @@
-# Codebase Relationships
-
-This document outlines the typical relationships between different components in the MyRestorePro codebase.
+# Codebase Relationships (C4-Style)
 
 ## Documents
 
-- **ContactController**
-  - type: controller
-  - relationships:
-    - depends_on → Quote (Model)
+### Context
+- name: MyRestorePro System
+  type: system
+  relationships:
+    - depends_on → SQLite Database
 
-- **Quote (Model)**
-  - type: model
-  - relationships:
-    - depends_on → Database (Core)
+### Containers
+- name: Web Application
+  type: container
+  technology: PHP + HTMX
+  responsibilities: Handles all business logic, serves HTML pages, and manages user interactions.
+  relationships:
+    - depends_on → Database
 
-- **Database (Core)**
-  - type: infrastructure
-  - relationships:
-    - none
+- name: Database
+  type: container
+  technology: SQLite
+  responsibilities: Stores all application data, including users, quotes, contacts, and services.
+  relationships: []
+
+### Components (Example: Quote Submission)
+- name: ContactController
+  type: controller
+  relationships:
+    - type: depends_on
+      target: Quote Model
+
+- name: Quote Model
+  type: model
+  relationships:
+    - type: depends_on
+      target: Database Core
+
+### Code / Infrastructure
+- name: Database Core
+  type: infrastructure
+  technology: PHP (PDO)
+  responsibilities: Handles the connection to the SQLite database and executes all queries.
+  relationships: []
 
 ---
 
 ## C4 View
 
-This diagram shows the component relationships for a typical data flow, such as submitting a quote.
-
-### Components (Application Layer)
+### Components (Quote Submission Flow)
 
 ```mermaid
 C4Component
-    Container(api, "Application Layer", "PHP", "Handles business logic and data persistence")
+    Container(app, "Web Application", "PHP", "Handles business logic")
 
-    Component(controller, "ContactController", "PHP Class", "Handles quote submission requests")
+    Component(controller, "ContactController", "PHP Class", "Handles quote submission")
     Component(model, "Quote Model", "PHP Class", "Business logic for quotes")
-    Component(core, "Database Core", "PHP Class", "Handles DB connections and queries")
+    Component(core, "Database Core", "PHP Class", "Handles DB queries")
     ContainerDb(db, "SQLite Database", "Stores application data")
 
     Rel(controller, model, "Depends on")

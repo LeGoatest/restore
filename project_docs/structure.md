@@ -75,21 +75,56 @@ graph TD
 
 ```
 MyRestorePro/
-├── app/
-│   ├── src/
+├── app/                      ► Contains all core application logic (outside web root).
+│   ├── src/                  ► PHP source code following PSR-4.
 │   │   ├── Controllers/
+│   │   │   ├── AdminController.php
+│   │   │   ├── ApiController.php
+│   │   │   ├── AuthController.php
+│   │   │   ├── ClientController.php
+│   │   │   ├── ContactController.php
+│   │   │   ├── HomeController.php
+│   │   │   └── ...
 │   │   ├── Core/
-│   │   ├── Middleware/     ► Contains access control logic.
+│   │   │   ├── Auth.php
+│   │   │   ├── Database.php
+│   │   │   ├── Migration.php
+│   │   │   └── Router.php
+│   │   ├── Middleware/
+│   │   │   └── PermissionMiddleware.php
 │   │   └── Models/
+│   │       ├── Quote.php
+│   │       ├── User.php
+│   │       └── ...
 │   ├── views/
-│   │   ├── client/         ► Views for the Client Hub.
-│   │   ├── staff/          ► Views for the Staff Hub.
-│   │   └── vendor/         ► Views for the Vendor Hub.
+│   │   ├── admin/
+│   │   ├── client/
+│   │   ├── staff/
+│   │   ├── vendor/
+│   │   └── ...
 │   ├── database/
-│   │   └── migrations/
-│   └── ...
-├── public_html/
-├── project_docs/
-├── docs/
-└── ...
+│   │   ├── migrations/
+│   │   └── setup.php
+│   ├── tests/
+│   │   ├── Unit/
+│   │   └── ...
+│   ├── app.db
+│   └── composer.json
+│
+├── public_html/              ► The public web root.
+│   ├── static/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/ (Excluded for brevity)
+│   ├── index.php
+│   └── .htaccess
+│
+├── project_docs/             ► Contains generated project documentation.
+│
+├── docs/                     ► Contains source documentation and agent guidelines.
+│
+├── node_modules/ (Excluded)
+├── vendor/ (Excluded)
+├── package.json
+└── README.md
 ```
