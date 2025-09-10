@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'my-restore-pro/website',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-fix/router-delete-method',
+        'version' => 'dev-fix/router-delete-method',
+        'reference' => 'eb02e13a6d5f66b308e279e0f51296c80046863b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -389,9 +389,9 @@
             'dev_requirement' => false,
         ),
         'my-restore-pro/website' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-fix/router-delete-method',
+            'version' => 'dev-fix/router-delete-method',
+            'reference' => 'eb02e13a6d5f66b308e279e0f51296c80046863b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1209,6 +1209,15 @@
             'install_path' => __DIR__ . '/../theseer/tokenizer',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'twig/twig' => array(
+            'pretty_version' => 'v3.21.1',
+            'version' => '3.21.1.0',
+            'reference' => '285123877d4dd97dd7c11842ac5fb7e86e60d81d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../twig/twig',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'voku/portable-ascii' => array(
             'pretty_version' => '2.0.3',
