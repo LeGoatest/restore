@@ -8,23 +8,20 @@ use App\Core\Controller;
 use App\Core\Mailer;
 use App\Models\Contact;
 use App\Models\Quote;
+use App\Models\Setting;
+use App\DTOs\SettingsContainerDTO;
 
 class ContactController extends Controller
 {
     public function index(): string
     {
+        $allSettings = Setting::getAllSettings();
+        $settingsDTO = new SettingsContainerDTO($allSettings);
+
         $data = [
             'title' => 'Contact Us - Restore Removal',
             'meta_description' => 'Get in touch with Restore Removal for your junk removal needs. Call (239) 412-1566 or fill out our contact form.',
-            'contact_info' => [
-                'phone' => '(727) 692-8167',
-                'email' => 'info@myrestorepro.com',
-                'hours' => [
-                    'weekdays' => 'Mo-Sa: 7:00 AM - 6:00 PM',
-                    'sunday' => 'Closed',
-                ],
-                'location' => 'Ocala, FL',
-            ],
+            'settings' => $settingsDTO,
         ];
 
         return $this->render('public/pages/contact', $data);

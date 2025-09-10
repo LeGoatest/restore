@@ -22,17 +22,25 @@ switch ($command) {
         break;
         
     case 'reset':
-        echo "Are you sure you want to reset the database? This will delete all data! (y/N): ";
-        $handle = fopen("php://stdin", "r");
-        $line = fgets($handle);
-        fclose($handle);
+        $force = in_array('-y', $argv) || in_array('--force', $argv);
         
-        if (trim(strtolower($line)) === 'y') {
+        if ($force) {
             Migration::reset();
             echo "Running migrations after reset...\n";
             Migration::run();
         } else {
-            echo "Reset cancelled.\n";
+            echo "Are you sure you want to reset the database? This will delete all data! (y/N): ";
+            $handle = fopen("php://stdin", "r");
+            $line = fgets($handle);
+            fclose($handle);
+
+            if (trim(strtolower($line)) === 'y') {
+                Migration::reset();
+                echo "Running migrations after reset...\n";
+                Migration::run();
+            } else {
+                echo "Reset cancelled.\n";
+            }
         }
         break;
         

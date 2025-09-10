@@ -95,16 +95,16 @@ $statusCounts = [
                 <div class="space-y-4">
                     <?php foreach ($paginatedQuotes as $quote): ?>
                         <div class="quote-item bg-gray-50 rounded-lg p-4 border-l-4 <?= 
-                            $quote['status'] === 'pending' ? 'border-yellow-500' : 
-                            ($quote['status'] === 'approved' ? 'border-green-500' : 
+                            $quote['status'] === 'pending' ? 'border-yellow-500' :
+                            ($quote['status'] === 'approved' ? 'border-green-500' :
                             ($quote['status'] === 'rejected' ? 'border-red-500' : 'border-blue-500')) ?>">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center space-x-3 mb-2">
                                         <h3 class="font-medium text-gray-900"><?= htmlspecialchars($quote['name']) ?></h3>
                                         <span class="px-2 py-1 text-xs rounded-full <?= 
-                                            $quote['status'] === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                            ($quote['status'] === 'approved' ? 'bg-green-100 text-green-800' : 
+                                            $quote['status'] === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                            ($quote['status'] === 'approved' ? 'bg-green-100 text-green-800' :
                                             ($quote['status'] === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) ?>">
                                             <?= ucfirst($quote['status']) ?>
                                         </span>
@@ -203,7 +203,7 @@ $statusCounts = [
                                                 <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors">
                                                     Update Quote
                                                 </button>
-                                                <button type="button" onclick="toggleEditQuote(<?= $quote['id'] ?>)" 
+                                                <button type="button" onclick="toggleEditQuote(<?= $quote['id'] ?>)"
                                                         class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors">
                                                     Cancel
                                                 </button>

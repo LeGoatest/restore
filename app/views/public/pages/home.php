@@ -8,9 +8,9 @@
         <div class="benifits-grid">
             <?php foreach ($benefits as $benefit): ?>
             <div class="benifits-item">
-                <i class="<?= htmlspecialchars($benefit['icon']) ?>"></i>
-                <h3><?= htmlspecialchars($benefit['title']) ?></h3>
-                <p><?= htmlspecialchars($benefit['description']) ?></p>
+                <i class="<?= htmlspecialchars($benefit->icon) ?>"></i>
+                <h3><?= htmlspecialchars($benefit->title) ?></h3>
+                <p><?= htmlspecialchars($benefit->description) ?></p>
             </div>
             <?php endforeach; ?>
         </div>
@@ -28,110 +28,19 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-6 items-center mb-8 px-6">
-
+            <?php foreach ($services as $service): ?>
             <div class="service-card hover-lift">
                 <div class="flex items-start space-x-6">
                     <div class="flex-shrink-0 w-20 flex justify-center">
-                        <i class="icon-[mdi--truck] text-6xl"></i>
+                        <i class="<?= htmlspecialchars($service->icon) ?> text-6xl"></i>
                     </div>
                     <div class="flex-1 pt-2">
-                        <h3>Junk Removal / Hualing</h3>
-                        <ul>
-                            <li>• Home cleanouts (attic to basement)</li>
-                            <li>• Garage cleanouts</li>
-                            <li>• Estate sale cleanouts</li>
-                            <li>• Senior home cleanouts</li>
-                            <li>• Storage unit cleanouts</li>
-                        </ul>
-                        <a
-                            class="btn-primary hidden"
-                            hx-get="/partials/junk-removal" 
-                            hx-target="#tab-content" 
-                            hx-swap="innerHTML"
-                            onclick="setActiveTab(this)">
-                            Read More
-                        </a>
+                        <h3><?= htmlspecialchars($service->name) ?></h3>
+                        <p><?= htmlspecialchars($service->description) ?></p>
                     </div>
                 </div>
             </div>
-
-            <div class="service-card hover-lift">
-                <div class="flex items-start space-x-6">
-                    <div class="flex-shrink-0 w-20 flex justify-center">
-                        <i class="icon-[game-icons--paint-roller] text-6xl"></i>
-                    </div>
-                    <div class="flex-1 pt-2">
-                        <h3>Surface Coatings</h3>
-                        <ul>
-                            <li>• Paver sealing</li>
-                            <li>• Deck staining</li>
-                            <li>• Epoxy coatings</li>
-                            <li>• Protective finishes</li>
-                            <li>• Surface restoration</li>
-                        </ul>
-                        <a
-                            class="btn-primary hidden"
-                            hx-get="/partials/surface-coatings" 
-                            hx-target="#tab-content" 
-                            hx-swap="innerHTML"
-                            onclick="setActiveTab(this)">
-                            Read More
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-card hover-lift">
-                <div class="flex items-start space-x-6">
-                    <div class="flex-shrink-0 w-20 flex justify-center">
-                        <i class="icon-[mdi--tree] text-6xl"></i>
-                    </div>
-                    <div class="flex-1 pt-2">
-                        <h3>LandScaping</h3>
-                        <ul>
-                            <li>• Landscape design</li>
-                            <li>• Lawn maintenance</li>
-                            <li>• Tree trimming</li>
-                            <li>• French Drain</li>
-                            <li>• Yard cleanup</li>
-                        </ul>
-                        <a
-                            class="btn-primary hidden"
-                            hx-get="/partials/landscaping" 
-                            hx-target="#tab-content" 
-                            hx-swap="innerHTML"
-                            onclick="setActiveTab(this)">
-                            Read More
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-card hover-lift">
-                <div class="flex items-start space-x-6">
-                    <div class="flex-shrink-0 w-20 flex justify-center">
-                        <i class="icon-[mdi--home] text-6xl"></i>
-                    </div>
-                    <div class="flex-1 pt-2">
-                        <h3>Exterior Cleaning</h3>
-                        <ul>
-                            <li>• Pressure washing</li>
-                            <li>• House Wash</li>
-                            <li>• Roof Wash</li>
-                            <li>• Deck / Padio cleaning</li>
-                            <li>• Window cleaning</li>
-                        </ul>
-                        <a
-                            class="btn-primary hidden"
-                            hx-get="/partials/cleaning" 
-                            hx-target="#tab-content" 
-                            hx-swap="innerHTML"
-                            onclick="setActiveTab(this)">
-                            Read More
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
 
         <!-- Tab Content -->

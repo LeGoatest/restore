@@ -6,42 +6,51 @@ namespace App\Models;
 
 use App\Core\Model;
 use App\Core\Database;
+use App\DTOs\ServiceDTO;
 
 class Service extends Model
 {
     protected static string $table = 'services';
-    protected static array $fillable = ['name', 'description', 'category', 'price', 'sort_order', 'is_active'];
+    protected static array $fillable = ['name', 'description', 'icon', 'category', 'sort_order', 'is_featured'];
     protected static array $allowHtml = ['description'];
+
+    public static function find(int $id, ?int $userId = null): ?array
+    {
+        return parent::find($id, $userId);
+    }
+
+    public static function findAsDTO(int $id, ?int $userId = null): ?ServiceDTO
+    {
+        $data = parent::find($id, $userId);
+        return $data ? new ServiceDTO($data) : null;
+    }
+
+    public static function where(string $column, mixed $value, ?int $userId = null): array
+    {
+        $allData = parent::where($column, $value, $userId);
+        return array_map(fn($data) => new ServiceDTO($data), $allData);
+    }
     
     public static function getByCategory(string $category): array
     {
-        return Database::fetchAll(
-            "SELECT * FROM " . self::$table . " WHERE category = ? AND is_active = 1 ORDER BY sort_order, name",
+        $allData = Database::fetchAll(
+            "SELECT * FROM " . self::$table . " WHERE category = ? ORDER BY sort_order, name",
             [$category]
         );
+        return array_map(fn($data) => new ServiceDTO($data), $allData);
     }
     
     public static function getActive(): array
     {
-        return Database::fetchAll(
-            "SELECT * FROM " . self::$table . " WHERE is_active = 1 ORDER BY category, sort_order, name"
-        );
+        // This method might need to be re-evaluated based on the new schema,
+        // as `is_active` was removed. For now, we'll assume it means featured.
+        return self::where('is_featured', 1);
     }
     
     public static function all(?int $userId = null): array
     {
-        $sql = "SELECT * FROM " . self::$table;
-        $params = [];
-        
-        // Add user_id filter if provided and column exists
-        if ($userId !== null && static::hasColumn('user_id')) {
-            $sql .= " WHERE user_id = :user_id";
-            $params['user_id'] = $userId;
-        }
-        
-        $sql .= " ORDER BY category, sort_order, name";
-        
-        return Database::fetchAll($sql, $params);
+        $allData = parent::all($userId);
+        return array_map(fn($data) => new ServiceDTO($data), $allData);
     }
     
     public static function count(?int $userId = null): int

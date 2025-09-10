@@ -84,9 +84,9 @@ class Migration
     {
         echo "Resetting database...\n";
         
-        // Get all tables except migrations
+        // Get all tables except migrations and sqlite_sequence
         $tables = Database::fetchAll(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name != 'migrations'"
+            "SELECT name FROM sqlite_master WHERE type='table' AND name != 'migrations' AND name != 'sqlite_sequence'"
         );
         
         foreach ($tables as $table) {

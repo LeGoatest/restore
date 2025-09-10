@@ -230,10 +230,10 @@
                     <tbody>
                         <?php foreach ($pending_quotes as $quote): ?>
                         <tr>
-                            <td class="font-medium"><?= htmlspecialchars($quote['name']) ?></td>
-                            <td class="text-sm"><?= htmlspecialchars($quote['service_type'] ?? 'General') ?></td>
-                            <td><a href="tel:<?= htmlspecialchars($quote['phone']) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($quote['phone']) ?></a></td>
-                            <td class="text-sm text-gray-600"><?= date('M j, g:i A', strtotime($quote['created_at'])) ?></td>
+                            <td class="font-medium"><?= htmlspecialchars($quote->name) ?></td>
+                            <td class="text-sm"><?= htmlspecialchars($quote->service_type ?? 'General') ?></td>
+                            <td><a href="tel:<?= htmlspecialchars($quote->phone) ?>" class="text-blue-600 hover:text-blue-800"><?= htmlspecialchars($quote->phone) ?></a></td>
+                            <td class="text-sm text-gray-600"><?= date('M j, g:i A', strtotime($quote->created_at)) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
