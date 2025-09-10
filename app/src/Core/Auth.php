@@ -136,7 +136,8 @@ class Auth
     public static function redirectIfAuthenticated(): void
     {
         if (self::isAuthenticated()) {
-            header('Location: /admin');
+            // Redirect to a generic dashboard, which will then handle role-based redirection.
+            header('Location: /dashboard');
             exit;
         }
     }

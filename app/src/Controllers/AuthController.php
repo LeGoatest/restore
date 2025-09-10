@@ -103,8 +103,45 @@ class AuthController extends Controller
     public function verifyMagicLink(string $token): string
     {
         try {
-            if (Auth::loginWithMagicLink($token)) {
-                $this->redirect('/admin');
+            $user = Auth::verifyMagicLink($token);
+
+            if ($user) {
+                // Manually log the user in
+                $_SESSION['authenticated'] = true;
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['login_time'] = time();
+
+                $roles = User::getRoles($user['id']);
+                $_SESSION['user_roles'] = $roles; // Store all roles in session
+
+                $hasAdmin = in_array('Admin', $roles);
+                $isStaff = in_array('Editor', $roles) || in_array('Manager', $roles);
+                $hasClient = in_array('Client', $roles);
+                $hasVendor = in_array('Vendor', $roles);
+
+                // Multi-role logic for Staff/Admin on desktop could be added here in the future.
+                // For now, we will use a simple priority-based redirect.
+                if ($hasAdmin) {
+                    $this->redirect('/admin');
+                    return '';
+                }
+                if ($isStaff) {
+                    $this->redirect('/staff/dashboard');
+                    return '';
+                }
+                if ($hasClient) {
+                    $this->redirect('/client/dashboard');
+                    return '';
+                }
+                if ($hasVendor) {
+                    $this->redirect('/vendor/dashboard');
+                    return '';
+                }
+
+                // Default redirect if no specific role dashboard is found
+                $this->redirect('/');
+
             } else {
                 $_SESSION['login_error'] = 'This login link has expired or is invalid. Please request a new one.';
                 $this->redirect('/login');
@@ -122,5 +159,38 @@ class AuthController extends Controller
         Auth::logout();
         $this->redirect('/login');
         return ''; // This should never be reached due to redirect
+    }
+
+    public function dashboardRedirect(): string
+    {
+        Auth::requireAuth(); // Ensure user is authenticated
+
+        $roles = $_SESSION['user_roles'] ?? [];
+
+        $hasAdmin = in_array('Admin', $roles);
+        $isStaff = in_array('Editor', $roles) || in_array('Manager', $roles);
+        $hasClient = in_array('Client', $roles);
+        $hasVendor = in_array('Vendor', $roles);
+
+        if ($hasAdmin) {
+            $this->redirect('/admin');
+            return '';
+        }
+        if ($isStaff) {
+            $this->redirect('/staff/dashboard');
+            return '';
+        }
+        if ($hasClient) {
+            $this->redirect('/client/dashboard');
+            return '';
+        }
+        if ($hasVendor) {
+            $this->redirect('/vendor/dashboard');
+            return '';
+        }
+
+        // Default redirect if no specific role dashboard is found
+        $this->redirect('/');
+        return '';
     }
 }

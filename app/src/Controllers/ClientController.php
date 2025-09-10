@@ -9,9 +9,9 @@ use App\Core\Auth;
 
 class ClientController extends Controller
 {
-    public function index(): string
+    public function dashboard(): string
     {
-        Auth::requireAuth('client');
+        \App\Middleware\PermissionMiddleware::handle(['Client']);
 
         $userId = Auth::getUserId();
 
@@ -23,6 +23,6 @@ class ClientController extends Controller
             'quotes' => \App\Models\Quote::getByUserId($userId),
         ];
 
-        return $this->render('client/dashboard', $data, 'client');
+        return $this->render('client/dashboard', $data, 'main'); // Use main layout for now
     }
 }

@@ -154,4 +154,38 @@ class User extends Model
             [$userId]
         )->rowCount();
     }
+
+    // New RBAC methods
+
+    public static function getPermissions(int $userId): int
+    {
+        $result = Database::fetchOne(
+            "SELECT EffectiveMask FROM V_UserEffective WHERE ID_User = ?",
+            [$userId]
+        );
+        return $result['EffectiveMask'] ?? 0;
+    }
+
+    public static function hasPermission(int $userId, string $permissionName): bool
+    {
+        $result = Database::fetchOne(
+            "SELECT COUNT(*) as count FROM V_UserEffectiveNames WHERE ID_User = ? AND EffectiveNames LIKE ?",
+            [$userId, '%' . $permissionName . '%']
+        );
+        return ($result['count'] ?? 0) > 0;
+    }
+
+    public static function getRoles(int $userId): array
+    {
+        $results = Database::fetchAll(
+            "SELECT g.Name FROM UserGroup ug JOIN `Group` g ON ug.ID_Group = g.ID WHERE ug.ID_User = ?",
+            [$userId]
+        );
+        return array_column($results, 'Name');
+    }
+
+    public static function hasRole(int $userId, string $roleName): bool
+    {
+        return in_array($roleName, self::getRoles($userId));
+    }
 }
