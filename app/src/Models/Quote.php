@@ -28,6 +28,15 @@ class Quote extends Model
         );
         return array_map(fn($data) => new QuoteDTO($data), $allData);
     }
+
+    public static function getByUserId(int $userId): array
+    {
+        $allData = Database::fetchAll(
+            "SELECT * FROM " . self::$table . " WHERE user_id = ? ORDER BY created_at DESC",
+            [$userId]
+        );
+        return array_map(fn($data) => new QuoteDTO($data), $allData);
+    }
     
     public static function getRecent(int $limit = 10): array
     {
