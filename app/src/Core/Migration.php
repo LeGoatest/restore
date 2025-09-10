@@ -84,19 +84,30 @@ class Migration
     {
         echo "Resetting database...\n";
         
+        Database::query("PRAGMA foreign_keys = OFF;");
+
+        // Drop views first
+        echo "Dropping views...\n";
+        Database::query("DROP VIEW IF EXISTS V_UserEffective");
+        Database::query("DROP VIEW IF EXISTS V_UserEffectiveNames");
+        echo "Dropped views.\n";
+
         // Get all tables except migrations and sqlite_sequence
         $tables = Database::fetchAll(
             "SELECT name FROM sqlite_master WHERE type='table' AND name != 'migrations' AND name != 'sqlite_sequence'"
         );
         
         foreach ($tables as $table) {
-            Database::query("DROP TABLE IF EXISTS " . $table['name']);
-            echo "Dropped table: {$table['name']}\n";
+            echo "Dropping table: {$table['name']}...\n";
+            Database::query('DROP TABLE IF EXISTS "' . $table['name'] . '"');
+            echo "Dropped table: {$table['name']}.\n";
         }
         
         // Clear migrations record
+        echo "Deleting from migrations table...\n";
         Database::query("DELETE FROM migrations");
         
+        Database::query("PRAGMA foreign_keys = ON;");
         echo "Database reset complete!\n";
     }
 }

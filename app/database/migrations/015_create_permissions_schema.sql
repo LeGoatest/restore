@@ -96,7 +96,13 @@ SELECT (SELECT id FROM "users"  WHERE username='alice'),
        (SELECT ID FROM "Group" WHERE Name='Client');
 INSERT INTO UserGroup(ID_User,ID_Group)
 SELECT (SELECT id FROM "users"  WHERE username='bob'),
+       (SELECT ID FROM "Group" WHERE Name='Staff');
+INSERT INTO UserGroup(ID_User,ID_Group)
+SELECT (SELECT id FROM "users"  WHERE username='bob'),
        (SELECT ID FROM "Group" WHERE Name='Editor');
+INSERT INTO UserGroup(ID_User,ID_Group)
+SELECT (SELECT id FROM "users"  WHERE username='carol'),
+       (SELECT ID FROM "Group" WHERE Name='Staff');
 INSERT INTO UserGroup(ID_User,ID_Group)
 SELECT (SELECT id FROM "users"  WHERE username='carol'),
        (SELECT ID FROM "Group" WHERE Name='Manager');

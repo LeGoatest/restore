@@ -23,6 +23,6 @@ class ClientController extends Controller
             'quotes' => \App\Models\Quote::getByUserId($userId),
         ];
 
-        return $this->render('client/dashboard', $data, 'main'); // Use main layout for now
+        return $this->render('client/dashboard', $data, 'client');
     }
 }
