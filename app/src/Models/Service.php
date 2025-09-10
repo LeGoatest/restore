@@ -14,18 +14,20 @@ class Service extends Model
     protected static array $fillable = ['name', 'description', 'icon', 'category', 'sort_order', 'is_featured'];
     protected static array $allowHtml = ['description'];
 
-    public static function find(int $id): ?ServiceDTO
+    public static function find(int $id, ?int $userId = null): ?array
     {
-        $data = parent::find($id);
+        return parent::find($id, $userId);
+    }
+
+    public static function findAsDTO(int $id, ?int $userId = null): ?ServiceDTO
+    {
+        $data = parent::find($id, $userId);
         return $data ? new ServiceDTO($data) : null;
     }
 
-    public static function where(string $column, $value): array
+    public static function where(string $column, mixed $value, ?int $userId = null): array
     {
-        $allData = Database::fetchAll(
-            "SELECT * FROM " . self::$table . " WHERE {$column} = ? ORDER BY sort_order, name",
-            [$value]
-        );
+        $allData = parent::where($column, $value, $userId);
         return array_map(fn($data) => new ServiceDTO($data), $allData);
     }
     
