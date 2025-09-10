@@ -14,9 +14,14 @@ class Quote extends Model
     protected static array $fillable = ['name', 'email', 'phone', 'address', 'service_type', 'description', 'preferred_date', 'preferred_time', 'estimated_amount', 'status', 'notes'];
     protected static array $allowHtml = ['description', 'notes'];
 
-    public static function find(int $id): ?QuoteDTO
+    public static function find(int $id, ?int $userId = null): ?array
     {
-        $data = parent::find($id);
+        return parent::find($id, $userId);
+    }
+
+    public static function findAsDTO(int $id, ?int $userId = null): ?QuoteDTO
+    {
+        $data = parent::find($id, $userId);
         return $data ? new QuoteDTO($data) : null;
     }
     

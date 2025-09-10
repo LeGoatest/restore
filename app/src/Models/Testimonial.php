@@ -13,18 +13,15 @@ class Testimonial extends Model
     protected static string $table = 'testimonials';
     protected static array $fillable = ['author_name', 'author_location', 'quote_text', 'rating', 'is_featured', 'created_at'];
 
-    public static function all(): array
+    public static function all(?int $userId = null): array
     {
-        $allData = Database::fetchAll("SELECT * FROM " . self::$table . " ORDER BY created_at DESC");
+        $allData = parent::all($userId);
         return array_map(fn($data) => new TestimonialDTO($data), $allData);
     }
 
-    public static function where(string $column, $value): array
+    public static function where(string $column, mixed $value, ?int $userId = null): array
     {
-        $allData = Database::fetchAll(
-            "SELECT * FROM " . self::$table . " WHERE {$column} = ? ORDER BY created_at DESC",
-            [$value]
-        );
+        $allData = parent::where($column, $value, $userId);
         return array_map(fn($data) => new TestimonialDTO($data), $allData);
     }
 }

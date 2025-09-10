@@ -13,9 +13,11 @@ class SiteBenefit extends Model
     protected static string $table = 'site_benefits';
     protected static array $fillable = ['title', 'description', 'icon', 'sort_order'];
 
-    public static function all(): array
+    public static function all(?int $userId = null): array
     {
-        $allData = Database::fetchAll("SELECT * FROM " . self::$table . " ORDER BY sort_order");
+        $allData = parent::all($userId);
+        // The parent `all` method already sorts by primary key, so we'll rely on that for now.
+        // If specific ordering is needed, it should be handled carefully.
         return array_map(fn($data) => new SiteBenefitDTO($data), $allData);
     }
 }

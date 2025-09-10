@@ -14,9 +14,14 @@ class Contact extends Model
     protected static array $fillable = ['name', 'email', 'phone', 'service_type', 'message', 'status'];
     protected static array $allowHtml = ['message'];
 
-    public static function find(int $id): ?ContactDTO
+    public static function find(int $id, ?int $userId = null): ?array
     {
-        $data = parent::find($id);
+        return parent::find($id, $userId);
+    }
+
+    public static function findAsDTO(int $id, ?int $userId = null): ?ContactDTO
+    {
+        $data = parent::find($id, $userId);
         return $data ? new ContactDTO($data) : null;
     }
     
