@@ -1,130 +1,213 @@
-# Project Structure: MyRestorePro
+# Project Structure
 
-This document provides a comprehensive overview of the project structure for MyRestorePro.
+This document outlines the directory and file structure of the MyRestorePro project.
 
-## I. Project Overview
+## High-Level Overview
 
-MyRestorePro is a web application designed to serve as the online presence for a restoration and removal business. It includes a public-facing website, a lite CMS, and a multi-faceted user portal with role-based access control.
+The project is organized into several main directories:
 
-## II. Component Structure & System Architecture
+-   `app/`: Contains the core PHP backend application, including controllers, models, views, and database migrations.
+-   `public_html/`: The web server's document root. It contains the main `index.php` entry point and all public assets like CSS, JavaScript, and images.
+-   `docs/`: Contains project documentation, specifications, and steering documents.
+-   `project_docs/`: A separate directory for generated or user-requested documentation.
+-   `node_modules/` & `vendor/`: Contain third-party dependencies for Node.js and PHP, respectively.
 
-The application uses a bespoke PHP MVC architecture with a clear separation of concerns. A new middleware layer has been introduced to handle access control.
+## Detailed File Tree
 
-```mermaid
-graph TD
-    subgraph "User Browser"
-        U[User]
-    end
-
-    subgraph "Web Server (public_html)"
-        direction LR
-        INDEX[index.php]
-    end
-
-    subgraph "Application Server (app/)"
-        direction LR
-        ROUTER[Core/Router.php]
-        MIDDLEWARE[Middleware/PermissionMiddleware.php]
-        CONTROLLERS[Controllers]
-        MODELS[Models]
-        DB[Core/Database.php]
-        SQLITE[app.db]
-    end
-
-    U --> INDEX
-    INDEX --> ROUTER
-    ROUTER -- dispatches to --> CONTROLLERS
-    CONTROLLERS -- invokes --> MIDDLEWARE
-    MIDDLEWARE -- checks against --> MODELS
-    CONTROLLERS -- interacts with --> MODELS
-    MODELS --> DB
-    DB --> SQLITE
-```
-
-## III. Feature Breakdown
-
-- **Public Website**: Home, Services, Contact, Quote pages.
-- **Role-Based Hubs**:
-  - `/client/dashboard` for customers.
-  - `/staff/dashboard` for employees.
-  - `/vendor/dashboard` for partners.
-- **Admin Panel**: Comprehensive management of the site and its users.
-- **Authentication**: Unified magic link login with role-based redirection.
-
-## IV. Technical Requirements
-
-- **Server**: PHP >= 8.1, Apache/Nginx with `mod_rewrite`.
-- **Database**: SQLite 3.
-- **Frontend**: HTMX, Tailwind CSS 4.1, npm.
-
-## V. Data Flow
-
-1.  **User Request**: Request hits `index.php`.
-2.  **Routing**: The `Router` maps the URL to a `Controller` method.
-3.  **Middleware**: The `Controller` method calls the `PermissionMiddleware` to check for appropriate user roles.
-4.  **Controller Logic**: If authorized, the controller fetches data from `Models`.
-5.  **Response**: The `Controller` renders a `View` which is returned to the user.
-
-## VI. Security and Authentication
-
-- **Web Root Isolation**: `app/` directory is outside `public_html`.
-- **RBAC**: The new permission system, powered by the database schema and `PermissionMiddleware`, controls access to all non-public routes.
-- **Authentication**: Secure, passwordless magic link system.
-
-## VII. Directory Organization
+Below is a detailed representation of the project's file structure. `node_modules` and `vendor` directories have been excluded for brevity.
 
 ```
 MyRestorePro/
-├── app/                      ► Contains all core application logic (outside web root).
-│   ├── src/                  ► PHP source code following PSR-4.
+├── README.md
+├── app/
+│   ├── app.db
+│   ├── composer.json
+│   ├── composer.lock
+│   ├── composer.phar
+│   ├── database/
+│   │   ├── app.db
+│   │   ├── check.php
+│   │   ├── migrations/
+│   │   │   ├── 001_create_contacts_table.sql
+│   │   │   ├── 002_create_quotes_table.sql
+│   │   │   ├── 003_create_services_table.sql
+│   │   │   ├── 004_create_users_table.sql
+│   │   │   ├── 005_add_magic_link_fields.sql
+│   │   │   ├── 006_create_analytics_table.sql
+│   │   │   ├── 007_create_hero_table.sql
+│   │   │   ├── 008_create_service_locations_table.sql
+│   │   │   ├── 009_create_settings_table.sql
+│   │   │   ├── 011_add_user_id_to_contacts_table.sql
+│   │   │   ├── 012_add_user_id_to_quotes_table.sql
+│   │   │   ├── 013_add_is_featured_and_icon_to_services.sql
+│   │   │   ├── 014_create_site_benefits_table.sql
+│   │   │   └── 015_create_permissions_schema.sql
+│   │   └── setup.php
+│   ├── routes/
+│   │   └── web.php
+│   ├── src/
 │   │   ├── Controllers/
 │   │   │   ├── AdminController.php
 │   │   │   ├── ApiController.php
 │   │   │   ├── AuthController.php
 │   │   │   ├── ClientController.php
 │   │   │   ├── ContactController.php
+│   │   │   ├── DebugController.php
 │   │   │   ├── HomeController.php
-│   │   │   └── ...
+│   │   │   ├── PartialsController.php
+│   │   │   ├── ServicesController.php
+│   │   │   ├── SettingsController.php
+│   │   │   ├── StaffController.php
+│   │   │   └── VendorController.php
 │   │   ├── Core/
 │   │   │   ├── Auth.php
+│   │   │   ├── BotProtection.php
+│   │   │   ├── Controller.php
 │   │   │   ├── Database.php
+│   │   │   ├── Mailer.php
 │   │   │   ├── Migration.php
-│   │   │   └── Router.php
+│   │   │   ├── Model.php
+│   │   │   ├── Navigation.php
+│   │   │   ├── Router.php
+│   │   │   ├── Security.php
+│   │   │   └── View.php
+│   │   ├── DTOs/
+│   │   │   ├── ContactDTO.php
+│   │   │   ├── QuoteDTO.php
+│   │   │   ├── ServiceDTO.php
+│   │   │   ├── Settings/
+│   │   │   │   ├── BusinessSettingsDTO.php
+│   │   │   │   └── HomePageSettingsDTO.php
+│   │   │   ├── SettingsContainerDTO.php
+│   │   │   ├── SiteBenefitDTO.php
+│   │   │   └── TestimonialDTO.php
+│   │   ├── Helpers/
+│   │   │   └── SchemaGenerator.php
 │   │   ├── Middleware/
 │   │   │   └── PermissionMiddleware.php
 │   │   └── Models/
+│   │       ├── Analytics.php
+│   │       ├── Contact.php
+│   │       ├── Hero.php
 │   │       ├── Quote.php
-│   │       ├── User.php
-│   │       └── ...
-│   ├── views/
-│   │   ├── admin/
-│   │   ├── client/
-│   │   ├── staff/
-│   │   ├── vendor/
-│   │   └── ...
-│   ├── database/
-│   │   ├── migrations/
-│   │   └── setup.php
+│   │       ├── Service.php
+│   │       ├── ServiceLocation.php
+│   │       ├── Setting.php
+│   │       ├── SiteBenefit.php
+│   │       ├── Testimonial.php
+│   │       └── User.php
+│   ├── test-route.php
+│   ├── test-schema.php
 │   ├── tests/
-│   │   ├── Unit/
-│   │   └── ...
-│   ├── app.db
-│   └── composer.json
-│
-├── public_html/              ► The public web root.
-│   ├── static/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── images/ (Excluded for brevity)
-│   ├── index.php
-│   └── .htaccess
-│
-├── project_docs/             ► Contains generated project documentation.
-│
-├── docs/                     ► Contains source documentation and agent guidelines.
-│
+│   │   ├── Pest.php
+│   │   ├── TestCase.php
+│   │   └── Unit/
+│   │       └── UserModelTest.php
+│   ├── vendor/ (Excluded)
+│   └── views/
+│       ├── admin/
+│       │   ├── contacts.php
+│       │   ├── dashboard.php
+│       │   ├── hero.php
+│       │   ├── partials/
+│       │   │   ├── settings-error.php
+│       │   │   ├── settings-saved.php
+│       │   │   └── sidebar.php
+│       │   ├── quotes.php
+│       │   ├── services.php
+│       │   ├── settings.php
+│       │   └── users.php
+│       ├── client/
+│       │   └── dashboard.php
+│       ├── debug/
+│       │   └── post-test.php
+│       ├── errors/
+│       │   └── 404.php
+│       ├── layouts/
+│       │   ├── admin.php
+│       │   ├── auth.php
+│       │   ├── main.php
+│       │   └── minimal.php
+│       ├── partials/
+│       │   ├── contact-success.php
+│       │   ├── footer.php
+│       │   ├── header.php
+│       │   ├── login.php
+│       │   └── quote-success.php
+│       ├── public/
+│       │   ├── pages/
+│       │   │   ├── contact.php
+│       │   │   ├── home.php
+│       │   │   ├── quote.php
+│       │   │   └── services.php
+│       │   └── partials/
+│       │       ├── hero.php
+│       │       └── home/
+│       │           ├── business-pickup.php
+│       │           ├── cleaning.php
+│       │           ├── home-pickup.php
+│       │           ├── junk-removal.php
+│       │           ├── landscaping.php
+│       │           ├── pricing-info.php
+│       │           └── surface-coatings.php
+│       ├── staff/
+│       │   └── dashboard.php
+│       └── vendor/
+│           └── dashboard.php
+├── docs/
+│   ├── AGENTS.md
+│   ├── CHANGELOG.md
+│   ├── Suggestions.md
+│   ├── spec/
+│   │   ├── BLUEPRINT.md
+│   │   ├── requirements.md
+│   │   └── tasks.md
+│   └── steering/
+│       ├── product.md
+│       ├── structure.md
+│       └── tech.md
+├── input.css
 ├── node_modules/ (Excluded)
-├── vendor/ (Excluded)
+├── package-lock.json
 ├── package.json
-└── README.md
+├── project_docs/
+│   ├── BLUEPRINT.md
+│   ├── CHANGELOG.md
+│   ├── product.md
+│   ├── relationships.md
+│   ├── requirements.md
+│   ├── structure.md
+│   ├── tasks.md
+│   └── tech.md
+├── public_html/
+│   ├── app/
+│   │   └── uploads/
+│   │       ├── favicon_file_1756984343.png
+│   │       └── logo_file_1756984343.png
+│   ├── index.php
+│   ├── llms-full.txt
+│   ├── llms.txt
+│   ├── robots.txt
+│   ├── schema.json
+│   ├── sitemap.xml
+│   └── static/
+│       ├── css/
+│       │   ├── old_style.css
+│       │   └── styles.css
+│       ├── email-templates/
+│       │   ├── admin-notification.html
+│       │   ├── customer-receipt.html
+│       │   └── magic-link.html
+│       ├── font/
+│       │   ├── Arimo.ttf
+│       │   ├── Inter.ttf
+│       │   ├── Oswald.ttf
+│       │   └── SGEO-Regular.ttf
+│       ├── images/ (Content omitted for brevity)
+│       └── js/
+│           ├── chart.min.js
+│           ├── htmx.min.js
+│           ├── main.js
+│           └── main.js.backup
+└── rec.md
 ```
