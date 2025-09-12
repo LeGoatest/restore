@@ -9,9 +9,9 @@ use App\Core\Auth;
 
 class ClientController extends Controller
 {
-    public function index(): string
+    public function dashboard(): string
     {
-        Auth::requireAuth('client');
+        \App\Middleware\PermissionMiddleware::handle(['Client']);
 
         $userId = Auth::getUserId();
 

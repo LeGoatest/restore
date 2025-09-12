@@ -20,7 +20,7 @@ class AdminController extends Controller
 {
     public function dashboard(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Admin Dashboard',
@@ -47,7 +47,7 @@ class AdminController extends Controller
 
     public function contacts(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Contacts - Admin Dashboard',
@@ -61,7 +61,7 @@ class AdminController extends Controller
 
     public function quotes(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Quotes - Admin Dashboard',
@@ -79,7 +79,7 @@ class AdminController extends Controller
      */
     public function updateContactStatus(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $contactId = (int)($_POST['id'] ?? 0);
         $status = $_POST['status'] ?? '';
@@ -97,7 +97,7 @@ class AdminController extends Controller
      */
     public function deleteContact(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $contactId = (int)($_POST['id'] ?? 0);
         
@@ -114,7 +114,7 @@ class AdminController extends Controller
      */
     public function updateQuoteStatus(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $quoteId = (int)($_POST['id'] ?? 0);
         $status = $_POST['status'] ?? '';
@@ -132,7 +132,7 @@ class AdminController extends Controller
      */
     public function updateQuote(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         if (!Security::validateCsrfToken()) {
             header('HTTP/1.1 403 Forbidden');
@@ -166,7 +166,7 @@ class AdminController extends Controller
      */
     public function deleteQuote(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $quoteId = (int)($_POST['id'] ?? 0);
         
@@ -252,7 +252,7 @@ class AdminController extends Controller
 
     public function services(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Services - Admin Dashboard',
@@ -268,7 +268,7 @@ class AdminController extends Controller
 
     public function users(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Users - Admin Dashboard',
@@ -283,7 +283,7 @@ class AdminController extends Controller
 
     public function settings(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         // Load all settings by category
         $settings = [
@@ -309,7 +309,7 @@ class AdminController extends Controller
 
     public function hero(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $data = [
             'title' => 'Hero Section - Admin Dashboard',
@@ -328,7 +328,7 @@ class AdminController extends Controller
      */
     public function saveHero()
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         if (!Security::validateCsrfToken()) {
             header('HTTP/1.1 403 Forbidden');
@@ -354,7 +354,7 @@ class AdminController extends Controller
      */
     public function saveSettings()
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         if (!Security::validateCsrfToken()) {
             return $this->partial('admin/partials/settings-error', [
@@ -414,7 +414,7 @@ class AdminController extends Controller
      */
     public function addLocation(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         // Add new empty location to database
         ServiceLocation::add('City', '');
@@ -429,7 +429,7 @@ class AdminController extends Controller
      */
     public function removeLocation(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $locationId = (int)($_POST['id'] ?? 0);
         
@@ -446,7 +446,7 @@ class AdminController extends Controller
      */
     public function updateLocation(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $locationId = (int)($_POST['id'] ?? 0);
         $type = $_POST['type'] ?? 'City';
@@ -465,7 +465,7 @@ class AdminController extends Controller
      */
     public function loadSampleLocations(): string
     {
-        Auth::requireAuth();
+        \App\Middleware\PermissionMiddleware::handle(['Admin']);
         
         $sampleCities = [
             'Homosassa Springs', 'Homosassa', 'Crystal River', 'Inverness', 'Ocala', 

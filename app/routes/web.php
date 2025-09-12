@@ -29,6 +29,16 @@ $router->get('/login', AuthController::class, 'loginForm');
 $router->post('/login/request', AuthController::class, 'requestLogin');
 $router->get('/login/verify/{token}', AuthController::class, 'verifyMagicLink');
 $router->get('/logout', AuthController::class, 'logout');
+$router->get('/dashboard', AuthController::class, 'dashboardRedirect');
+
+// Client routes
+$router->get('/client/dashboard', ClientController::class, 'dashboard');
+
+// Staff routes
+$router->get('/staff/dashboard', StaffController::class, 'dashboard');
+
+// Vendor routes
+$router->get('/vendor/dashboard', VendorController::class, 'dashboard');
 
 // Debug routes (remove in production)
 $router->get('/debug/post-test', DebugController::class, 'postTest');
