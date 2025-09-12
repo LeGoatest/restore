@@ -1,8 +1,8 @@
-# AI Agent Operational Guidelines: MyRestorePro
+# AI Agent Operational Guidelines: [PROJECT_NAME]
 
 ## 1. Introduction
 
-This document outlines the core operational guidelines and behavioral principles for the AI agent(s) operating within the MyRestorePro project. These guidelines ensure that the AI acts in a consistent, helpful, secure, and ethical manner, aligning with project goals and human collaboration expectations.
+This document outlines the core operational guidelines and behavioral principles for the AI agent(s) operating within the [PROJECT_NAME] project. These guidelines ensure that the AI acts in a consistent, helpful, secure, and ethical manner, aligning with project goals and human collaboration expectations.
 
 The AI's primary purpose is to augment human capabilities, automate routine tasks, and provide intelligent assistance, not to replace human oversight or decision-making.
 
@@ -51,41 +51,19 @@ Guidelines for the AI agent(s)' approach to tasks and problems:
 
 ## 6. Project-Specific Constraints
 
-- All work should be done on the `jules` git branch.
-- When working on a task from `tasks.md`, a detailed plan must be created for that specific task before execution.
+<!-- E.g., All code changes must be submitted via Pull Requests. -->
+<!-- E.g., Only interact with repositories under the [GITHUB_OWNER] GitHub account. -->
+<!-- E.g., Avoid making direct changes to 'main' or 'master' branches. -->
 
-## 7. Key Project Documents
+## 7. Generate the following files:
+>Create a new folder project_docs in the root directory of the project, placing each new markdown document in it.
 
-When starting a new session, it is crucial to review the project documentation to understand the current state and objectives. The key documents are located in the `project_docs/` directory:
-
-- **product.md**: Outlines the product vision, features, and target audience.
-- **tech.md**: Details the technical stack for the project.
-- **structure.md**: Describes the project structure and data flow.
-- **requirements.md**: Lists the functional and non-functional requirements.
-- **tasks.md**: Contains the high-level tasks and action items for the project.
-- **CHANGELOG.md**: Tracks all notable changes to the project.
+* [BluePrint.md](./spec/BLUEPRINT.md)
+* [Requirements.md](./spec/requirements.md)
+* [Tasks.md](./spec/tasks.md)
+* [Structure.md](./steering/structure.md)
+* [Tech.md](./steering/tech.md)
+* [Product.md](./steering/product.md)
+* [Changelog.md](./changelog.md)
 
 ## 8. Put User Preferences & Feedback Here
-- **Project Name**: MyRestorePro
-- **Purpose**: Landing page, sales funnel, lite CMS.
-- **Audience**: Clients requesting various services.
-- **Tech Stack**:
-  - Bespoke PHP MVC framework.
-  - Composer for PHP dependencies.
-  - TailwindCSS 4.1 CLI for styling.
-  - `iconify-tailwindcss4` plugin for icons.
-  - HTMX for dynamic front-end interactions with minimal JavaScript.
-  - SQLite3 as the database.
-- **Coding Standards**:
-  - Adherence to PHP PSR standards.
-  - Strict MVC pattern for code organization.
-  - Doxygen-style inline documentation for all code.
-- **CSS Pattern**:
-  - Use single, semantic class names in HTML.
-  - Use `@apply` in `input.css` to compose Tailwind CSS utilities.
-- **Changelog**:
-  - Start versioning at `0.0.1`.
-  - Update the changelog regularly with meaningful changes.
-- **Process**:
-  - Conduct a deep dive into the codebase (e.g., `composer.json`) to generate `tech.md`.
-  - For each task from `tasks.md`, create a detailed plan before execution.
