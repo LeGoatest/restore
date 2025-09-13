@@ -117,4 +117,9 @@ class Database
     {
         self::getConnection()->rollBack();
     }
+
+    public static function close(): void
+    {
+        self::$connection = null;
+    }
 }

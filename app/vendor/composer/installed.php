@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'my-restore-pro/website',
-        'pretty_version' => 'dev-fix/router-delete-method',
-        'version' => 'dev-fix/router-delete-method',
-        'reference' => 'eb02e13a6d5f66b308e279e0f51296c80046863b',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'f4ef97be410c019b994813f150bf639d7e52897d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -389,9 +389,9 @@
             'dev_requirement' => false,
         ),
         'my-restore-pro/website' => array(
-            'pretty_version' => 'dev-fix/router-delete-method',
-            'version' => 'dev-fix/router-delete-method',
-            'reference' => 'eb02e13a6d5f66b308e279e0f51296c80046863b',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'f4ef97be410c019b994813f150bf639d7e52897d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

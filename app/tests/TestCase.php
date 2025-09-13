@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        Database::close();
+        \App\Core\Database::close();
     }
 
     private function seedDatabase(): void
