@@ -14,7 +14,7 @@
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
-            <a href="/quotes" class="text-blue-600 hover:underline mt-4 inline-block">View All Quotes</a>
+            <a href="/client/quotes" class="text-blue-600 hover:underline mt-4 inline-block">View All Quotes</a>
         </div>
         <div class="bg-white p-6 rounded-lg shadow">
             <h2 class="text-xl font-semibold mb-4">Your Contact Requests (<?= count($contacts) ?>)</h2>
@@ -27,7 +27,7 @@
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
-            <a href="/contacts" class="text-blue-600 hover:underline mt-4 inline-block">View All Contacts</a>
+            <a href="/client/contacts" class="text-blue-600 hover:underline mt-4 inline-block">View All Contacts</a>
         </div>
     </div>
 </div>

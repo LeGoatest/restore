@@ -33,6 +33,8 @@ $router->get('/dashboard', AuthController::class, 'dashboardRedirect');
 
 // Client routes
 $router->get('/client/dashboard', ClientController::class, 'dashboard');
+$router->get('/client/quotes', ClientController::class, 'quotes');
+$router->get('/client/contacts', ClientController::class, 'contacts');
 
 // Staff routes
 $router->get('/staff/dashboard', StaffController::class, 'dashboard');
