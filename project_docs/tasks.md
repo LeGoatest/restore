@@ -6,7 +6,7 @@ This document outlines the high-level tasks for the MyRestorePro project, based 
 
 ## II. High Priority Tasks
 
-- [ ] **TASK-1. Fix Testing Environment**
+- [x] **TASK-1. Fix Testing Environment**
   - Diagnose and resolve the persistent issue preventing Pest/PHPUnit tests from running.
   - This is a blocker for ensuring code quality and stability.
 

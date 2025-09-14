@@ -89,3 +89,34 @@ When starting a new session, it is crucial to review the project documentation t
 - **Process**:
   - Conduct a deep dive into the codebase (e.g., `composer.json`) to generate `tech.md`.
   - For each task from `tasks.md`, create a detailed plan before execution.
+
+## 9. Development
+
+### Running the Application
+To run locally, you can use PHP's built-in server from the public_html directory:
+
+```bash
+cd public_html
+php -S localhost:8000
+```
+
+### Running Tests
+
+The project uses Pest for testing. To run the test suite, navigate to the `app` directory and run the `pest` executable:
+
+```bash
+cd app
+./vendor/bin/pest
+```
+
+**Note on Test Environment Setup:**
+The test environment has been configured to work correctly. This involved:
+*   Creating a `phpunit.xml` file in the `app` directory.
+*   Ensuring the database connection is closed after each test.
+*   Suppressing console output during migrations to avoid "risky" test warnings.
+
+## 10. Project Management
+
+### Task Tracking
+
+This project uses the `project_docs/tasks.md` file to track high-level tasks. When a task is completed, please mark it as such by placing an 'x' in the checkbox, like this: `[x]`.
