@@ -12,6 +12,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // Set testing flag
+        Database::$is_testing = true;
+
         // Use an in-memory SQLite database for testing
         Database::init(':memory:');
 

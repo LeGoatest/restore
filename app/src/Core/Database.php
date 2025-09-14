@@ -11,6 +11,7 @@ class Database
 {
     private static ?PDO $connection = null;
     private static ?string $dbPath = null;
+    public static bool $is_testing = false;
 
     public static function init(?string $dbPath = null): void
     {

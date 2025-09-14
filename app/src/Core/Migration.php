@@ -30,7 +30,9 @@ class Migration
                 continue;
             }
 
-            echo "Running migration: {$filename}\n";
+            if (!Database::$is_testing) {
+                echo "Running migration: {$filename}\n";
+            }
             
             try {
                 $sql = file_get_contents($file);
@@ -39,15 +41,21 @@ class Migration
                 // Record that this migration has been run
                 self::recordMigration($filename);
                 
-                echo "✓ Migration {$filename} completed successfully\n";
+                if (!Database::$is_testing) {
+                    echo "✓ Migration {$filename} completed successfully\n";
+                }
                 
             } catch (\Exception $e) {
-                echo "✗ Migration {$filename} failed: " . $e->getMessage() . "\n";
+                if (!Database::$is_testing) {
+                    echo "✗ Migration {$filename} failed: " . $e->getMessage() . "\n";
+                }
                 throw $e;
             }
         }
 
-        echo "All migrations completed!\n";
+        if (!Database::$is_testing) {
+            echo "All migrations completed!\n";
+        }
     }
 
     private static function createMigrationsTable(): void
