@@ -11,6 +11,7 @@ class Database
 {
     private static ?PDO $connection = null;
     private static ?string $dbPath = null;
+    public static bool $is_testing = false;
 
     public static function init(?string $dbPath = null): void
     {
@@ -116,5 +117,10 @@ class Database
     public static function rollback(): void
     {
         self::getConnection()->rollBack();
+    }
+
+    public static function close(): void
+    {
+        self::$connection = null;
     }
 }

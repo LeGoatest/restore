@@ -12,6 +12,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // Set testing flag
+        Database::$is_testing = true;
+
         // Use an in-memory SQLite database for testing
         Database::init(':memory:');
 
@@ -26,7 +29,7 @@ abstract class TestCase extends BaseTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        Database::close();
+        \App\Core\Database::close();
     }
 
     private function seedDatabase(): void
