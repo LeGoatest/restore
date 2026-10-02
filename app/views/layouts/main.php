@@ -13,6 +13,81 @@ use App\Core\Security;
     
     <!-- Styles -->
     <link rel="stylesheet" href="/static/css/styles.css?v=1">
+    <style>
+        /* Header switches to desktop navigation at 640px instead of 768px. */
+        @media (min-width: 640px) and (max-width: 767.98px) {
+            nav .desktop {
+                display: block;
+            }
+
+            nav .mobile-trigger {
+                display: none;
+            }
+
+            nav .header-cta {
+                display: block;
+            }
+
+            nav .header-cta.header-cta-auth {
+                display: flex;
+            }
+        }
+
+        /* Explicit desktop-navigation override for narrow/mobile browsers. */
+        html.desktop-layout,
+        html.desktop-layout body {
+            min-width: 640px;
+        }
+
+        html.desktop-layout nav .desktop {
+            display: block !important;
+        }
+
+        html.desktop-layout nav .mobile-trigger {
+            display: none !important;
+        }
+
+        html.desktop-layout nav .header-cta {
+            display: block !important;
+        }
+
+        html.desktop-layout nav .header-cta.header-cta-auth {
+            display: flex !important;
+        }
+
+        nav .desktop-layout-reset {
+            display: none;
+        }
+
+        html.desktop-layout nav .desktop-layout-reset {
+            display: list-item;
+        }
+    </style>
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('restore-layout') === 'desktop') {
+                    document.documentElement.classList.add('desktop-layout');
+                }
+            } catch (error) {
+                // Storage may be unavailable; normal responsive behavior still works.
+            }
+        })();
+
+        window.restoreSetDesktopLayout = function (forceDesktop) {
+            document.documentElement.classList.toggle('desktop-layout', forceDesktop);
+
+            try {
+                if (forceDesktop) {
+                    localStorage.setItem('restore-layout', 'desktop');
+                } else {
+                    localStorage.removeItem('restore-layout');
+                }
+            } catch (error) {
+                // Keep the current-page override even if storage is unavailable.
+            }
+        };
+    </script>
     
     <!-- HTMX -->
     <script src="/static/js/htmx.min.js?v=1"></script>
