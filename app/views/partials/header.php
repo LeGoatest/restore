@@ -36,19 +36,26 @@
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
+                    <li class="desktop-layout-reset">
+                        <button type="button"
+                                class="menu text-neutral-400 hover:text-white"
+                                onclick="restoreSetDesktopLayout(false)">
+                            Mobile Menu
+                        </button>
+                    </li>
                 </ul>
             </div>
 
             <!-- CTA Button / User Menu - Hidden on mobile -->
             <?php if (Auth::isAuthenticated()): ?>
-                <div class="btn-cta hidden md:flex">
+                <div class="header-cta header-cta-auth btn-cta hidden md:flex">
                     <a href="/admin" class="text-white mr-4">Dashboard</a>
                     <a href="/logout" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full font-semibold transition-colors">
                         Logout
                     </a>
                 </div>
             <?php else: ?>
-                <div class="btn-cta hidden md:block">
+                <div class="header-cta btn-cta hidden md:block">
                     <a href="/contact" hx-get="/contact" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
                         Get in Touch
                     </a>
@@ -56,7 +63,7 @@
             <?php endif; ?>
 
             <!-- Mobile menu -->
-            <label class="relative z-40 cursor-pointer px-3 py-6 md:hidden" for="mobile-menu">
+            <label class="mobile-trigger relative z-40 cursor-pointer px-3 py-6 md:hidden" for="mobile-menu">
                 <input class="peer hidden" type="checkbox" id="mobile-menu" />
                 <div class="relative z-50 block h-[1px] w-7 bg-gray-800 content-[''] before:absolute before:top-[-0.35rem] before:z-50 before:block before:h-full before:w-full before:bg-gray-800 before:transition-all before:duration-200 before:ease-out before:content-[''] after:absolute after:right-0 after:bottom-[-0.35rem] after:block after:h-full after:w-full after:bg-gray-800 after:transition-all after:duration-200 after:ease-out after:content-[''] peer-checked:bg-transparent before:peer-checked:top-0 before:peer-checked:w-full before:peer-checked:rotate-45 before:peer-checked:transform after:peer-checked:bottom-0 after:peer-checked:w-full after:peer-checked:-rotate-45 after:peer-checked:transform">
                 </div>
@@ -84,6 +91,14 @@
                                     </li>
                                 <?php endif; ?>
                             <?php endforeach; ?>
+
+                            <li class="pt-4 border-t border-gray-200">
+                                <button type="button"
+                                        class="block w-full text-left text-lg font-medium text-gray-900 hover:text-yellow-600 transition-colors"
+                                        onclick="restoreSetDesktopLayout(true)">
+                                    Desktop Navigation
+                                </button>
+                            </li>
                             
                             <?php if (Auth::isAuthenticated()): ?>
                                 <li class="pt-4 border-t border-gray-200">
